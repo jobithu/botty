@@ -161,6 +161,118 @@ class Diablo:
         if self._config.general["info_screenshots"] and not found: cv2.imwrite(f"./info_screenshots/_failed_seal_{seal_layout}_{i}tries" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
         return found
 
+    def _seal_B1(self):
+        if type== "hammerdin":
+            seal_layout = "B1-S"
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+            Logger.info(seal_layout +": Starting to clear Seal")
+        
+            ### CLEAR TRASH & APPROACH SEAL ###
+            #self._char.kill_cs_trash() #done during sealcheck
+            self._picked_up_items |= self._pickit.pick_up_items(self._char)
+            if not self._pather.traverse_nodes([634], self._char): return False
+            self._sealdance(["DIA_B1S2_23_OPEN"], ["DIA_B1S2_23_CLOSED","DIA_B1S2_23_MOUSEOVER"], seal_layout + "-Boss", [634])
+            
+            ### KILL BOSS ###
+            Logger.info(seal_layout + ": Kill Boss B (De Seis)")
+            self._pather.traverse_nodes_fixed("dia_b1s_seal_deseis", self._char) # quite aggressive path, but has high possibility of directly killing De Seis with first hammers, for 50% of his spawn locations
+            if not self._char.kill_deseis([632], [631], [632]): return False
+            self._picked_up_items |= self._pickit.pick_up_items(self._char)
+            
+            ### GO HOME ###
+            if not self._pather.traverse_nodes([633, 634], self._char): return False
+            Logger.info(seal_layout + ": Static Pathing to Pentagram")
+            self._pather.traverse_nodes_fixed("dia_b1s_home", self._char)
+            Logger.info(seal_layout + ": Looping to PENTAGRAM")
+            if not self._loop_pentagram("dia_b1s_home_loop"): return False
+            if not self._pather.traverse_nodes([602], self._char , time_out=5): return False
+            Logger.info(seal_layout + ": finished seal & calibrated at PENTAGRAM")
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/calibrated_pentagram_after_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+        else:
+            seal_layout = "B1-S"
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+            Logger.info(seal_layout +": Starting to clear Seal")
+        
+            ### CLEAR TRASH & APPROACH SEAL ###
+            #self._char.kill_cs_trash() #done during sealcheck
+            self._picked_up_items |= self._pickit.pick_up_items(self._char)
+            if not self._pather.traverse_nodes([634], self._char): return False
+            self._sealdance(["DIA_B1S2_23_OPEN"], ["DIA_B1S2_23_CLOSED","DIA_B1S2_23_MOUSEOVER"], seal_layout + "-Boss", [634])
+            
+            ### KILL BOSS ###
+            Logger.info(seal_layout + ": Kill Boss B (De Seis)")
+            self._pather.traverse_nodes_fixed("dia_b1s_seal_deseis2", self._char) #safer?
+            if not self._char.kill_deseis([632], [631], [632]): return False
+            self._picked_up_items |= self._pickit.pick_up_items(self._char)
+            
+            ### GO HOME ###
+            if not self._pather.traverse_nodes([633, 634], self._char): return False
+            Logger.info(seal_layout + ": Static Pathing to Pentagram")
+            self._pather.traverse_nodes_fixed("dia_b1s_home", self._char)
+            Logger.info(seal_layout + ": Looping to PENTAGRAM")
+            if not self._loop_pentagram("dia_b1s_home_loop"): return False
+            if not self._pather.traverse_nodes([602], self._char , time_out=5): return False
+            Logger.info(seal_layout + ": finished seal & calibrated at PENTAGRAM")
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/calibrated_pentagram_after_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+        return True
+
+    def _seal_B2(self):
+        if type== "hammerdin":
+            seal_layout = "B2-U"
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+            Logger.info(seal_layout +": Starting to clear Seal")
+        
+            ### CLEAR TRASH & APPROACH SEAL ###
+            self._pather.traverse_nodes_fixed("dia_b2u_bold_seal", self._char)
+            self._sealdance(["DIA_B2U2_16_OPEN"], ["DIA_B2U2_16_CLOSED", "DIA_B2U2_16_MOUSEOVER"], seal_layout + "-Boss", [644])
+
+            ### KILL BOSS ###
+            Logger.info(seal_layout + ": Kill Boss B (De Seis)")
+            self._pather.traverse_nodes_fixed("dia_b2u_644_646", self._char) # We try to breaking line of sight, sometimes makes De Seis walk into the hammercloud. A better attack sequence here could make sense.
+
+            if not self._char.kill_deseis([641], [640], [646]): return False
+            self._picked_up_items |= self._pickit.pick_up_items(self._char)
+            if not self._pather.traverse_nodes([640], self._char): return False
+            self._picked_up_items |= self._pickit.pick_up_items(self._char)
+            
+            ### GO HOME ###
+            if not self._pather.traverse_nodes([640], self._char): return False
+            self._pather.traverse_nodes_fixed("dia_b2u_home", self._char)
+            Logger.info(seal_layout + ": Static Pathing to Pentagram")
+            Logger.info(seal_layout + ": Looping to PENTAGRAM")
+            if not self._loop_pentagram("dia_b2u_home_loop"): return False
+            if not self._pather.traverse_nodes([602], self._char , time_out=5): return False
+            Logger.info(seal_layout + ": finished seal & calibrated at PENTAGRAM")
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/calibrated_pentagram_after_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+        else:
+            seal_layout = "B2-U"
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+            Logger.info(seal_layout +": Starting to clear Seal")
+        
+            ### CLEAR TRASH & APPROACH SEAL ###
+            self._pather.traverse_nodes_fixed("dia_b2u_bold_seal", self._char)
+            self._sealdance(["DIA_B2U2_16_OPEN"], ["DIA_B2U2_16_CLOSED", "DIA_B2U2_16_MOUSEOVER"], seal_layout + "-Boss", [644])
+
+            ### KILL BOSS ###
+            Logger.info(seal_layout + ": Kill Boss B (De Seis)")
+            self._pather.traverse_nodes_fixed("dia_b2u_644_646", self._char) # We try to breaking line of sight, sometimes makes De Seis walk into the hammercloud. A better attack sequence here could make sense.
+            self._pather.traverse_nodes(self.char, [645, 642, 641], force_tp=True, do_pre_move = True)
+            if not self._char.kill_deseis([645], [642], [641]): return False
+            self._picked_up_items |= self._pickit.pick_up_items(self._char)
+            if not self._pather.traverse_nodes([640], self._char): return False
+            self._picked_up_items |= self._pickit.pick_up_items(self._char)
+            
+            ### GO HOME ###
+            if not self._pather.traverse_nodes([640], self._char): return False
+            self._pather.traverse_nodes_fixed("dia_b2u_home", self._char)
+            Logger.info(seal_layout + ": Static Pathing to Pentagram")
+            Logger.info(seal_layout + ": Looping to PENTAGRAM")
+            if not self._loop_pentagram("dia_b2u_home_loop"): return False
+            if not self._pather.traverse_nodes([602], self._char , time_out=5): return False
+            Logger.info(seal_layout + ": finished seal & calibrated at PENTAGRAM")
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/calibrated_pentagram_after_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+        return True
+
     def _seal_A1(self) -> bool:
         seal_layout = "A1-L"
         if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
@@ -194,7 +306,7 @@ class Diablo:
         Logger.info(seal_layout + ": finished seal & calibrated at PENTAGRAM")
         if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/calibrated_pentagram_after_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
         return True
-    
+  
     def _seal_A2(self) -> bool:
         seal_layout = "A2-Y"
         if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
@@ -215,7 +327,7 @@ class Diablo:
         
         ### KILL BOSS ###
         Logger.info(seal_layout + ": Kill Boss A (Vizier)")
-        self._char.kill_vizier([623], [624])
+        self._char.kill_vizier([624], [623])
         if not self._pather.traverse_nodes_fixed("dia_a2y_hop_622", self._char): return False
         Logger.info(seal_layout + ": Hop!")
         if not self._pather.traverse_nodes([623], self._char): return False
@@ -230,120 +342,122 @@ class Diablo:
         if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/calibrated_pentagram_after_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
         return True
 
-    def _seal_B1(self):
-        seal_layout = "B1-S"
-        if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
-        Logger.info(seal_layout +": Starting to clear Seal")
-    
-        ### CLEAR TRASH & APPROACH SEAL ###
-        #self._char.kill_cs_trash() #done during sealcheck
-        self._picked_up_items |= self._pickit.pick_up_items(self._char)
-        if not self._pather.traverse_nodes([634], self._char): return False
-        self._sealdance(["DIA_B1S2_23_OPEN"], ["DIA_B1S2_23_CLOSED","DIA_B1S2_23_MOUSEOVER"], seal_layout + "-Boss", [634])
-        
-        ### KILL BOSS ###
-        Logger.info(seal_layout + ": Kill Boss B (De Seis)")
-        self._pather.traverse_nodes_fixed("dia_b1s_seal_deseis", self._char) # quite aggressive path, but has high possibility of directly killing De Seis with first hammers, for 50% of his spawn locations
-        if not self._char.kill_deseis([632], [631], [632]): return False
-        self._picked_up_items |= self._pickit.pick_up_items(self._char)
-        
-        ### GO HOME ###
-        if not self._pather.traverse_nodes([633, 634], self._char): return False
-        Logger.info(seal_layout + ": Static Pathing to Pentagram")
-        self._pather.traverse_nodes_fixed("dia_b1s_home", self._char)
-        Logger.info(seal_layout + ": Looping to PENTAGRAM")
-        if not self._loop_pentagram("dia_b1s_home_loop"): return False
-        if not self._pather.traverse_nodes([602], self._char , time_out=5): return False
-        Logger.info(seal_layout + ": finished seal & calibrated at PENTAGRAM")
-        if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/calibrated_pentagram_after_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
-        return True
-
-    def _seal_B2(self):
-        seal_layout = "B2-U"
-        if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
-        Logger.info(seal_layout +": Starting to clear Seal")
-    
-        ### CLEAR TRASH & APPROACH SEAL ###
-        self._pather.traverse_nodes_fixed("dia_b2u_bold_seal", self._char)
-        self._sealdance(["DIA_B2U2_16_OPEN"], ["DIA_B2U2_16_CLOSED", "DIA_B2U2_16_MOUSEOVER"], seal_layout + "-Boss", [644])
-
-        ### KILL BOSS ###
-        Logger.info(seal_layout + ": Kill Boss B (De Seis)")
-        self._pather.traverse_nodes_fixed("dia_b2u_644_646", self._char) # We try to breaking line of sight, sometimes makes De Seis walk into the hammercloud. A better attack sequence here could make sense.
-
-        if not self._char.kill_deseis([641], [640], [646]): return False
-        self._picked_up_items |= self._pickit.pick_up_items(self._char)
-        if not self._pather.traverse_nodes([640], self._char): return False
-        self._picked_up_items |= self._pickit.pick_up_items(self._char)
-        
-        ### GO HOME ###
-        if not self._pather.traverse_nodes([640], self._char): return False
-        self._pather.traverse_nodes_fixed("dia_b2u_home", self._char)
-        Logger.info(seal_layout + ": Static Pathing to Pentagram")
-        Logger.info(seal_layout + ": Looping to PENTAGRAM")
-        if not self._loop_pentagram("dia_b2u_home_loop"): return False
-        if not self._pather.traverse_nodes([602], self._char , time_out=5): return False
-        Logger.info(seal_layout + ": finished seal & calibrated at PENTAGRAM")
-        if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/calibrated_pentagram_after_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
-        return True
-
     def _seal_C1(self) -> bool: #704 is a weak node, not found often
-        seal_layout = "C1-F"
-        Logger.info(seal_layout +": Starting to clear Seal")
-        if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
-        
-        ### CLEAR TRASH & APPROACH SEAL ###
-        #self._char.kill_cs_trash() #done during layout check
-        self._pather.traverse_nodes_fixed("dia_c1f_hop_fakeseal", self._char) # REPLACES: if not self._pather.traverse_nodes([656, 654, 655], self._char, time_out=3): return False #ISSUE: getting stuck on 704 often, reaching maxgamelength
-        #self._char.kill_cs_trash()
-        if not self._sealdance(["DIA_C1F_OPEN_NEAR"], ["DIA_C1F_CLOSED_NEAR","DIA_C1F_MOUSEOVER_NEAR"], seal_layout + "-Fake", [655]): return False #ISSUE: getting stuck on 705 during sealdance(), reaching maxgamelength
-        self._pather.traverse_nodes_fixed("dia_c1f_654_651", self._char)
-        if not self._sealdance(["DIA_C1F_BOSS_OPEN_RIGHT", "DIA_C1F_BOSS_OPEN_LEFT"], ["DIA_C1F_BOSS_MOUSEOVER_LEFT", "DIA_C1F_BOSS_CLOSED_NEAR_LEFT", "DIA_C1F_BOSS_CLOSED_NEAR_RIGHT"], seal_layout + "-Boss", [652]): return False
-        self._pather.traverse_nodes_fixed("dia_c1f_652", self._char)
-        
-        ### KILL BOSS ###
-        Logger.info(seal_layout + ": Kill Boss C (Infector)")
-        self._char.kill_infector()
-        self._picked_up_items |= self._pickit.pick_up_items(self._char)
-        
-        ### GO HOME ###
-        if not self._pather.traverse_nodes([654], self._char, time_out=3): return False # this node often is not found
-        Logger.info(seal_layout + ": Static Pathing to Pentagram")
-        self._pather.traverse_nodes_fixed("dia_c1f_home", self._char)
-        Logger.info(seal_layout + ": Looping to PENTAGRAM")
-        if not self._loop_pentagram("dia_c1f_home_loop"): return False
-        if not self._pather.traverse_nodes([602], self._char, time_out=5): return False
-        Logger.info(seal_layout + ": finished seal & calibrated at PENTAGRAM")
-        if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/calibrated_pentagram_after_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+        if type == "hammerdin":
+            seal_layout = "C1-F"
+            Logger.info(seal_layout +": Starting to clear Seal")
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+            
+            ### CLEAR TRASH & APPROACH SEAL ###
+            #self._char.kill_cs_trash() #done during layout check
+            self._pather.traverse_nodes_fixed("dia_c1f_hop_fakeseal", self._char) # REPLACES: if not self._pather.traverse_nodes([656, 654, 655], self._char, time_out=3): return False #ISSUE: getting stuck on 704 often, reaching maxgamelength
+            #self._char.kill_cs_trash()
+            if not self._sealdance(["DIA_C1F_OPEN_NEAR"], ["DIA_C1F_CLOSED_NEAR","DIA_C1F_MOUSEOVER_NEAR"], seal_layout + "-Fake", [655]): return False #ISSUE: getting stuck on 705 during sealdance(), reaching maxgamelength
+            self._pather.traverse_nodes_fixed("dia_c1f_654_651", self._char)
+            if not self._sealdance(["DIA_C1F_BOSS_OPEN_RIGHT", "DIA_C1F_BOSS_OPEN_LEFT"], ["DIA_C1F_BOSS_MOUSEOVER_LEFT", "DIA_C1F_BOSS_CLOSED_NEAR_LEFT", "DIA_C1F_BOSS_CLOSED_NEAR_RIGHT"], seal_layout + "-Boss", [652]): return False
+            self._pather.traverse_nodes_fixed("dia_c1f_652", self._char)
+            
+            ### KILL BOSS ###
+            Logger.info(seal_layout + ": Kill Boss C (Infector)")
+            self._char.kill_infector()
+            self._picked_up_items |= self._pickit.pick_up_items(self._char)
+            
+            ### GO HOME ###
+            if not self._pather.traverse_nodes([654], self._char, time_out=3): return False # this node often is not found
+            Logger.info(seal_layout + ": Static Pathing to Pentagram")
+            self._pather.traverse_nodes_fixed("dia_c1f_home", self._char)
+            Logger.info(seal_layout + ": Looping to PENTAGRAM")
+            if not self._loop_pentagram("dia_c1f_home_loop"): return False
+            if not self._pather.traverse_nodes([602], self._char, time_out=5): return False
+            Logger.info(seal_layout + ": finished seal & calibrated at PENTAGRAM")
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/calibrated_pentagram_after_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+        else:
+            seal_layout = "C1-F"
+            Logger.info(seal_layout +": Starting to clear Seal")
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+            
+            ### CLEAR TRASH & APPROACH SEAL ###
+            #self._char.kill_cs_trash() #done during layout check
+            self._pather.traverse_nodes_fixed("dia_c1f_hop_fakeseal", self._char) # REPLACES: if not self._pather.traverse_nodes([656, 654, 655], self._char, time_out=3): return False #ISSUE: getting stuck on 704 often, reaching maxgamelength
+            #self._char.kill_cs_trash()
+            if not self._sealdance(["DIA_C1F_OPEN_NEAR"], ["DIA_C1F_CLOSED_NEAR","DIA_C1F_MOUSEOVER_NEAR"], seal_layout + "-Fake", [655]): return False #ISSUE: getting stuck on 705 during sealdance(), reaching maxgamelength
+            self._pather.traverse_nodes_fixed("dia_c1f_654_651", self._char)
+            if not self._sealdance(["DIA_C1F_BOSS_OPEN_RIGHT", "DIA_C1F_BOSS_OPEN_LEFT"], ["DIA_C1F_BOSS_MOUSEOVER_LEFT", "DIA_C1F_BOSS_CLOSED_NEAR_LEFT", "DIA_C1F_BOSS_CLOSED_NEAR_RIGHT"], seal_layout + "-Boss", [652]): return False
+            self._pather.traverse_nodes_fixed("dia_c1f_652", self._char)
+            
+            ### KILL BOSS ###
+            Logger.info(seal_layout + ": Kill Boss C (Infector)")
+            self._char.kill_infector()
+            self._picked_up_items |= self._pickit.pick_up_items(self._char)
+            
+            ### GO HOME ###
+            if not self._pather.traverse_nodes([654], self._char, time_out=3): return False # this node often is not found
+            Logger.info(seal_layout + ": Static Pathing to Pentagram")
+            self._pather.traverse_nodes_fixed("dia_c1f_home", self._char)
+            Logger.info(seal_layout + ": Looping to PENTAGRAM")
+            if not self._loop_pentagram("dia_c1f_home_loop"): return False
+            if not self._pather.traverse_nodes([602], self._char, time_out=5): return False
+            Logger.info(seal_layout + ": finished seal & calibrated at PENTAGRAM")
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/calibrated_pentagram_after_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
         return True
 
     def _seal_C2(self) -> bool: #could make sense to change seal pop order - if infector dies, all mobs die immediatly, on the other hand if infector does not die at his spawn, we have a 2nd chance getting him with sealdance() at fake seal
-        seal_layout = "C2-G"
-        Logger.info(seal_layout +": Starting to clear Seal")
-        if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
-        
-        ### CLEAR TRASH & APPROACH SEAL ###
-        if not self._pather.traverse_nodes([663, 662], self._char): return False
-        if not self._sealdance(["DIA_C2G2_7_OPEN"], ["DIA_C2G2_7_CLOSED", "DIA_C2G2_7_MOUSEOVER"], seal_layout + "-Boss", [662]): return False
-        self._pather.traverse_nodes_fixed("dia_c2g_663", self._char) # REPLACES for increased consistency: #if not self._pather.traverse_nodes([662, 663], self._char): return False
-        Logger.info(seal_layout + ": Kill Boss C (Infector)")
-        
-        ### KILL BOSS ###
-        self._char.kill_infector()
-        self._picked_up_items |= self._pickit.pick_up_items(self._char)
-        if not self._pather.traverse_nodes([664, 665], self._char): return False
-        if not self._sealdance(["DIA_C2G2_21_OPEN"], ["DIA_C2G2_21_CLOSED", "DIA_C2G2_21_MOUSEOVER"], seal_layout + "-Fake", [665]): return False
-        self._picked_up_items |= self._pickit.pick_up_items(self._char)
-        
-        ### GO HOME ###
-        if not self._pather.traverse_nodes([665], self._char): return False
-        Logger.info(seal_layout + ": Static Pathing to Pentagram")
-        self._pather.traverse_nodes_fixed("dia_c2g_home", self._char)
-        Logger.info(seal_layout + ": Looping to PENTAGRAM")
-        if not self._loop_pentagram("dia_c2g_home_loop"): return False
-        if not self._pather.traverse_nodes([602], self._char, time_out=5): return False
-        Logger.info(seal_layout + ": finished seal & calibrated at PENTAGRAM")
-        if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/calibrated_pentagram_after_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+        if type == "hammerdin":
+            seal_layout = "C2-G"
+            Logger.info(seal_layout +": Starting to clear Seal")
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+            
+            ### CLEAR TRASH & APPROACH SEAL ###
+            if not self._pather.traverse_nodes([663, 662], self._char): return False
+            if not self._sealdance(["DIA_C2G2_7_OPEN"], ["DIA_C2G2_7_CLOSED", "DIA_C2G2_7_MOUSEOVER"], seal_layout + "-Boss", [662]): return False
+            self._pather.traverse_nodes_fixed("dia_c2g_663", self._char) # REPLACES for increased consistency: #if not self._pather.traverse_nodes([662, 663], self._char): return False
+            Logger.info(seal_layout + ": Kill Boss C (Infector)")
+            
+            ### KILL BOSS ###
+            self._char.kill_infector()
+            self._picked_up_items |= self._pickit.pick_up_items(self._char)
+            if not self._pather.traverse_nodes([664, 665], self._char): return False
+            if not self._sealdance(["DIA_C2G2_21_OPEN"], ["DIA_C2G2_21_CLOSED", "DIA_C2G2_21_MOUSEOVER"], seal_layout + "-Fake", [665]): return False
+            self._picked_up_items |= self._pickit.pick_up_items(self._char)
+            
+            ### GO HOME ###
+            if not self._pather.traverse_nodes([665], self._char): return False
+            Logger.info(seal_layout + ": Static Pathing to Pentagram")
+            self._pather.traverse_nodes_fixed("dia_c2g_home", self._char)
+            Logger.info(seal_layout + ": Looping to PENTAGRAM")
+            if not self._loop_pentagram("dia_c2g_home_loop"): return False
+            if not self._pather.traverse_nodes([602], self._char, time_out=5): return False
+            Logger.info(seal_layout + ": finished seal & calibrated at PENTAGRAM")
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/calibrated_pentagram_after_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+        else:
+            seal_layout = "C2-G"
+            Logger.info(seal_layout +": Starting to clear Seal")
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
+            
+            ### CLEAR TRASH & APPROACH SEAL ###
+            if not self._pather.traverse_nodes([663, 662], self._char): return False
+            if not self._sealdance(["DIA_C2G2_7_OPEN"], ["DIA_C2G2_7_CLOSED", "DIA_C2G2_7_MOUSEOVER"], seal_layout + "-Boss", [662]): return False
+            self.pre_move()
+            self._pather.traverse_nodes([662], self, time_out=2.5, force_tp=True) #safer?
+            self._char.kill_cs_trash()
+            Logger.info(seal_layout + ": Kill Boss C (Infector)")
+
+            ### KILL BOSS ###
+            self._char.kill_infector()
+            self._picked_up_items |= self._pickit.pick_up_items(self._char)
+            if not self._pather.traverse_nodes([664, 665], self._char): return False
+            if not self._sealdance(["DIA_C2G2_21_OPEN"], ["DIA_C2G2_21_CLOSED", "DIA_C2G2_21_MOUSEOVER"], seal_layout + "-Fake", [665]): return False
+            self._picked_up_items |= self._pickit.pick_up_items(self._char)
+            
+            ### GO HOME ###
+            if not self._pather.traverse_nodes([665], self._char): return False
+            Logger.info(seal_layout + ": Static Pathing to Pentagram")
+            self._pather.traverse_nodes_fixed("dia_c2g_home", self._char)
+            Logger.info(seal_layout + ": Looping to PENTAGRAM")
+            if not self._loop_pentagram("dia_c2g_home_loop"): return False
+            if not self._pather.traverse_nodes([602], self._char, time_out=5): return False
+            Logger.info(seal_layout + ": finished seal & calibrated at PENTAGRAM")
+            if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/calibrated_pentagram_after_" + seal_layout + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
         return True
 
     def battle(self, do_pre_buff: bool) -> Union[bool, tuple[Location, bool]]:
@@ -384,7 +498,7 @@ class Diablo:
                 Logger.debug("A2-Y: Layout_check step 2/2 - Failed to determine the right Layout at A (Vizier) - aborting run")
                 if self._config.general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/_A2Y_failed_layoutcheck_" + time.strftime("%Y%m%d_%H%M%S") + ".png", self._screen.grab())
                 return False
-        
+
         # Seal B: De Seis (to the top)
         if do_pre_buff: self._char.pre_buff()
         self._char.kill_cs_trash()
@@ -478,4 +592,3 @@ if __name__ == "__main__":
 # Better Looping Home consistency at A & C (if a tombstone stash is on its way, the path gets displaced which might lead to missing the pentagram)
 # We could consider a function get_nearest_node() or a path home from where we started to loot to not get off-track after looting trash.
 # It could make sense to change ALL the fights to just static paths. in the heat of battle the nodes sometimes are not recognized, leading to chicken - OR to clear all trash thoroughly before attacking the sealboss.
-

@@ -1,3 +1,4 @@
+from pickle import FALSE
 import cv2
 import threading
 from copy import deepcopy
@@ -210,7 +211,7 @@ if __name__ == "__main__":
     config = Config()
     screen = Screen(config.general["monitor"])
     template_finder = TemplateFinder(screen)
-    search_templates = ["DIABLO_PENT_0", "DIABLO_PENT_1", "DIABLO_PENT_2", "DIABLO_PENT_3"]
+    search_templates = ["DURANCEFOUR1", "DURANCEFOUR2", "DURANCEFOUR3",  "FOURPILLAR", "FOURPILLAR2", "FOURPILLAR5", "FOURPILLAR6", "FOURPILLAR7", "FOURPILLAR8", "FOURPILLAR9", "PURPENT2", "PURPENT3", "PURPS"]
 
     while 1:
         # img = cv2.imread("")
@@ -218,7 +219,7 @@ if __name__ == "__main__":
         display_img = img.copy()
         start = time.time()
         for key in search_templates:
-            template_match = template_finder.search(key, img, best_match=True, threshold=0.5, use_grayscale=True)
+            template_match = template_finder.search(key, img, best_match=True, threshold=0.3, use_grayscale=False)
             if template_match.valid:
                 cv2.putText(display_img, str(template_match.name), template_match.position, cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
                 cv2.circle(display_img, template_match.position, 7, (255, 0, 0), thickness=5)

@@ -65,6 +65,9 @@ class Location:
     # Trav
     A3_TRAV_START = "a3_trav_start"
     A3_TRAV_CENTER_STAIRS = "a3_trav_center_stairs"
+    # Meph
+    A3_MEPH_START = "a3_meph_start"
+    A3_MEPH_END = "a3_meph_end"
     # Nihalatk
     A5_NIHLATAK_START = "a5_nihlatak_lvl1_start"
     A5_NIHLATAK_END = "a5_nihlatak_lvl2_end"
@@ -283,6 +286,24 @@ class Pather:
             #akara
             707: {"A1_TOWN_8": (-230, 93), "A1_TOWN_7": (357, 39), },
             708: {"A1_TOWN_3": (-32, 200), "A1_TOWN_7": (533, -103), "A1_TOWN_9": (505, -298)},
+
+            # MEPH
+
+            # strairs stuff
+            69420: {"MEPH_LAYOUT1_1": (0, 52), "MEPH_LAYOUT1_3": (101, -333), "MEPH_LAYOUT1_2": (-356, -115), "MEPH_LAYOUT1_0": (452, -178), },
+            69421: {"MEPH_0": (-4, 2), },
+            # level 3
+            69422: {"MEPHY_4": (-57, 5), "MEPHY_1": (-58, 4), "MEPHY_3": (-59, 3), "MEPHY_0": (-59, 4), "MEPHY_2": (-59, 5), },
+            69423: {"MEPHY_4": (-627, 176), "MEPHY_1": (-628, 175), "MEPHY_3": (-629, 174), "MEPHY_0": (-629, 175), "MEPHY_2": (-629, 176), },
+            69424: {"MEPHY_4": (-607, 101), "MEPHY_1": (-608, 100), "MEPHY_3": (-609, 99), "MEPHY_0": (-609, 100), "MEPHY_2": (-609, 101), },
+            69425: {"MEPHY_4": (-18, -83), "MEPHY_2": (-20, -83), "MEPHY_3": (-20, -85), },
+            69426: {"MEPHY_4": (-630, -345), "MEPHY_2": (-632, -345), "MEPHY_3": (-632, -347), },
+            69427: {"MEPHY_5": (-635, -350), },
+            69428: {"MEPHY_6": (-637, -354), },
+            69429: {"MEPHY_7": (-326, -232), },
+            69430: {"MEPHY_8": (331, 199), },
+
+
         }
         self._paths = {
             # A5 Town
@@ -641,6 +662,7 @@ if __name__ == "__main__":
     keyboard.wait("f11")
     from config import Config
     from char.sorceress import LightSorc
+    from char.sorceress import BlizzSorc
     from char.hammerdin import Hammerdin
     from ui import UiManager
     config = Config()
@@ -648,11 +670,11 @@ if __name__ == "__main__":
     t_finder = TemplateFinder(screen)
     pather = Pather(screen, t_finder)
 
-    display_all_nodes(pather, "DIA_B1S")
+    display_all_nodes(pather, "repair_btn")
 
     # # changing node pos and generating new code
     # code = ""
-    # node_idx = 226
+    # node_idx = 6969
     # offset = [0, 0]
     # for k in pather._nodes[node_idx]:
     #     pather._nodes[node_idx][k][0] += offset[0]
@@ -661,6 +683,6 @@ if __name__ == "__main__":
     # print(code)
 
     ui_manager = UiManager(screen, t_finder)
-    char = Hammerdin(config.hammerdin, config.char, screen, t_finder, ui_manager, pather)
+    char = BlizzSorc(config.blizz_sorc, config.char, screen, t_finder, ui_manager, pather)
 
     #pather.traverse_nodes([632], char)

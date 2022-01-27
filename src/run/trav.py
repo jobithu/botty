@@ -1,12 +1,14 @@
 from char import IChar
 from config import Config
 from logger import Logger
+from char.sorceress import Sorceress
 from pather import Location, Pather
 from typing import Union
 from item.pickit import PickIt
 from template_finder import TemplateFinder
 from town.town_manager import TownManager
 from ui import UiManager
+from screen import Screen
 from utils.misc import wait
 
 
@@ -18,7 +20,8 @@ class Trav:
         town_manager: TownManager,
         ui_manager: UiManager,
         char: IChar,
-        pickit: PickIt
+        pickit: PickIt,
+        screen: Screen
     ):
         self._config = Config()
         self._template_finder = template_finder
@@ -30,33 +33,36 @@ class Trav:
 
     def approach(self, start_loc: Location) -> Union[bool, Location]:
         # Go to Travincal via waypoint
-        Logger.info("Run Trav")
+        Logger.info("Run Meph")
         if not self._town_manager.open_wp(start_loc):
             return False
         wait(0.4)
-        if self._ui_manager.use_wp(3, 7):
+        if self._ui_manager.use_wp(3, 8):
             return Location.A3_TRAV_START
         return False
 
-    def battle(self, do_pre_buff: bool) -> Union[bool, tuple[Location, bool]]:
+    def battle(self, do_pre_buff: bool, screen: Screen) -> Union[bool, tuple[Location, bool]]:
         # Kill Council
-        if not self._template_finder.search_and_wait(["TRAV_0", "TRAV_1", "TRAV_20"], threshold=0.65, time_out=20).valid:
-            return False
+        dinky = 0
         if do_pre_buff:
             self._char.pre_buff()
-        if self._char.can_teleport():
-            self._pather.traverse_nodes_fixed("trav_safe_dist", self._char)
+        if dinky < 15:
+                pos_m = self._screen.convert_abs_to_monitor((random.uniform(-150, -1), random.uniform(10, 100)))
+                self.pre_move()
+                self.move(pos_m, force_move=True)
+        elif dinky >= 15 and dinky <= 30:
+            pos_m = self._screen.convert_abs_to_monitor((random.uniform(1, 150), random.uniform(-10, -200)))
+            self.pre_move()
+            self.move(pos_m, force_move=True)
         else:
-            if not self._pather.traverse_nodes((Location.A3_TRAV_START, Location.A3_TRAV_CENTER_STAIRS), self._char, force_move=True):
-                return False
-        self._char.kill_council()
-        picked_up_items = self._pickit.pick_up_items(self._char, is_at_trav=True)
-        wait(0.2, 0.3)
-        # If we can teleport we want to move back inside and also check loot there
-        if self._char.can_teleport():
-            if not self._pather.traverse_nodes([229], self._char, time_out=2.5):
-                self._pather.traverse_nodes([228, 229], self._char, time_out=2.5)
-            picked_up_items |= self._pickit.pick_up_items(self._char, is_at_trav=True)
-        # Make sure we go back to the center to not hide the tp
-        self._pather.traverse_nodes([230], self._char, time_out=2.5)
+            self._char.kill_council()
+            picked_up_items = self._pickit.pick_up_items(self._char, is_at_trav=True)
+            wait(0.2, 0.3)
+            # If we can teleport we want to move back inside and also check loot there
+            if self._char.can_teleport():
+                if not self._pather.traverse_nodes([229], self._char, time_out=2.5):
+                    self._pather.traverse_nodes([228, 229], self._char, time_out=2.5)
+                picked_up_items |= self._pickit.pick_up_items(self._char, is_at_trav=True)
+            # Make sure we go back to the center to not hide the tp
+            self._pather.traverse_nodes([230], self._char, time_out=2.5)
         return (Location.A3_TRAV_CENTER_STAIRS, picked_up_items)

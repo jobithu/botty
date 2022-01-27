@@ -76,7 +76,7 @@ class NodeRecorder:
                     self._template_counter += 1
                     # save as png
                     template_img = cut_roi(img, [*self._upper_left, width, height])
-                    template_path = f"C:/Users/13136/botty/generated/templates/{self._run_name}/{ref_point_name}.png"
+                    template_path = f"generated/templates/{self._run_name}/{ref_point_name}.png"
                     cv2.imwrite(template_path, template_img)
                     self._upper_left = None
                     template_img = load_template(template_path, 1.0, False)

@@ -4,3 +4,4 @@ from .trav import Trav
 from .nihlatak import Nihlatak
 from .arcane import Arcane
 from .diablo import Diablo
+from .meph import Meph
