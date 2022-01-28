@@ -434,7 +434,7 @@ class Meph:
             keyboard.send("tab")
             pos_m = self._screen.convert_screen_to_monitor(template_match.position)
         while not roomfound:
-            roomfound = self._template_finder.search_and_wait(["DURANCEFOUR10", "MEPH_EXIT1", "DURANCEFOUR3", "MEPH_0"], threshold=0.5, time_out=0.1, take_ss=False, use_grayscale=False).valid
+            roomfound = self._template_finder.search_and_wait(["DURANCEFOUR10", "MEPH_EXIT1", "DURANCEFOUR3", "MEPH_0", "DURANCEFOUR10", "FOURPILLAR4", "FOURPILLAR5"], threshold=0.65, time_out=0.1, take_ss=False, use_grayscale=False).valid
             t0 = self._screen.grab()
             self._char.move(pos_m, force_tp=True, force_move=True)
             t1 = self._screen.grab()
@@ -446,6 +446,7 @@ class Meph:
             self._char.move(pos_m, force_tp=True, force_move=True)
             self._char.move(pos_m, force_tp=True, force_move=True)
             self._char.move(pos_m, force_tp=True, force_move=True)
+            roomfound = self._template_finder.search_and_wait(["DURANCEFOUR10", "MEPH_EXIT1", "DURANCEFOUR3", "MEPH_0", "DURANCEFOUR10", "FOURPILLAR4", "FOURPILLAR5"], threshold=0.65, time_out=0.1, take_ss=False, use_grayscale=False).valid
             keyboard.send("tab")
             wait(.5)
             found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
@@ -462,9 +463,9 @@ class Meph:
                     score = .5
                     Logger.debug("STUCK")
                     dinky += 1
-        while not self._pather.traverse_nodes([69420], self._char, time_out=3) or self._pather.traverse_nodes([69421], self._char, time_out=3):
-            self._pather.traverse_nodes([69420], self._char, time_out=3)
-            pos_m = self._screen.convert_abs_to_monitor((random.randint(-70, 70), random.randint(-70, 70)))
+        while not self._pather.traverse_nodes([69420], self._char, time_out=3):
+            self._pather.traverse_nodes([69421], self._char, time_out=3)
+            pos_m = self._screen.convert_abs_to_monitor((random.randint(-70, -70), random.randint(-70, -70)))
             self._char.move(pos_m, force_move=True)
                 
         picked_up_items = False 
@@ -528,8 +529,7 @@ class Meph:
             #    self._char.move(pos_m, force_move=True)
 
         Logger.debug("LEVEL 2 REFINE AND LEVEL 3 ETA 4 YEARS")
-        wait(10)
-        self._pather.traverse_nodes([69422, 69423, 69424, 69425, 69426, 69427, 69428, 69429], self._char, threshold=0.80, time_out=3)
+        self._pather.traverse_nodes([69431, 69432, 69433, 69434, 69435, 69436, 69437], self._char, threshold=0.5, time_out=3)
         Logger.debug("We gonna die to meph lawllll")
         self._char.kill_meph()
         loc = Location.A3_MEPH_END
