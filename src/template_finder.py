@@ -211,7 +211,7 @@ if __name__ == "__main__":
     config = Config()
     screen = Screen(config.general["monitor"])
     template_finder = TemplateFinder(screen)
-    search_templates = ["DURANCEFOUR1", "DURANCEFOUR2", "DURANCEFOUR3",  "FOURPILLAR", "FOURPILLAR2", "FOURPILLAR5", "FOURPILLAR6", "FOURPILLAR7", "FOURPILLAR8", "FOURPILLAR9", "PURPENT2", "PURPENT3", "PURPS"]
+    search_templates = ["MEPH_LVL2_WP3E_1", "MEPH_LVL2_WP3E_0", "MEPH_EXIT2"]
 
     while 1:
         # img = cv2.imread("")

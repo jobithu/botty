@@ -288,29 +288,41 @@ class Pather:
             708: {"A1_TOWN_3": (-32, 200), "A1_TOWN_7": (533, -103), "A1_TOWN_9": (505, -298)},
 
             # MEPH
+            #level 2 wp running
+            #WP1
+            69400: {"MEPH_LVL2_WP1_2": (-4, -60), "MEPH_LVL2_WP1_5": (-33, -109), "MEPH_LVL2_WP1_4": (173, -43), "MEPH_LVL2_WP1_6": (-25, 220), "MEPH_LVL2_WP1_0": (349, 55), "MEPH_LVL2_WP1_8": (398, -31), "MEPH_LVL2_WP1_3": (-435, 44), "MEPH_LVL2_WP1_7": (-464, 2), },
+            69401: {"MEPH_LVL2_WP1_8": (-106, 246), "MEPH_LVL2_WP1_0": (-155, 332), "MEPH_LVL2_WP1_4": (-331, 234), "MEPH_LVL2_WP1_5": (-537, 168), "MEPH_LVL2_WP1_6": (-529, 497), "MEPH_LVL2_WP1_7": (-968, 279), },
+            # level 2 exit
+            69499: {"MEPH_LVL2_WP3E_1": (0, 0), "MEPH_LVL2_WP3E_0": (0, 0), "MEPH_LVL2_WP3E_1": (0, 0), "MEPH_EXIT2": (0, 0), },
+            #exit wp one
+            69402: {"MEPH_LVL2_WP1E_14": (-50, -47), "MEPH_LVL2_WP1E_7": (42, -75), "MEPH_LVL2_WP1E_8": (38, -117), "MEPH_LVL2_WP1E_6": (152, 17), "MEPH_LVL2_WP1E_9": (-22, -188), "MEPH_LVL2_WP1E_15": (-183, -58), "MEPH_LVL2_WP1E_5": (180, 80), "MEPH_LVL2_WP1E_10": (-21, -215), },
+            69403: {"MEPH_LVL2_WP1E_6": (63, 34), "MEPH_LVL2_WP1E_7": (-47, -58), "MEPH_LVL2_WP1E_8": (-51, -100), "MEPH_LVL2_WP1E_5": (91, 97), "MEPH_LVL2_WP1E_12": (132, 19), "MEPH_LVL2_WP1E_14": (-139, -30), "MEPH_LVL2_WP1E_11": (180, 80), "MEPH_LVL2_WP1E_9": (-111, -171), },
+            69404: {"MEPH_LVL2_WP1E_10": (36, 8), "MEPH_LVL2_WP1E_9": (35, 35), "MEPH_LVL2_WP1E_8": (95, 106), "MEPH_LVL2_WP1E_14": (7, 176), "MEPH_LVL2_WP1E_7": (99, 148), "MEPH_LVL2_WP1E_15": (-126, 165), "MEPH_LVL2_WP1E_16": (-194, 143), "MEPH_LVL2_WP1E_13": (-258, 166), },
+            69405: {"MEPH_LVL2_WP1E_3": (3, 42), "MEPH_LVL2_WP1E_2": (96, 114), "MEPH_LVL2_WP1E_13": (153, 66), "MEPH_LVL2_WP1E_16": (217, 43), "MEPH_LVL2_WP1E_15": (285, 65), "MEPH_LVL2_WP1E_14": (418, 76), "MEPH_LVL2_WP1E_9": (446, -65), "MEPH_LVL2_WP1E_6": (620, 140), },
+            # exit wp four
+            69406: {"MEPH_LVL2_WP4E_2": (55, -12), "MEPH_LVL2_WP4E_1": (39, -178), "MEPH_LVL2_WP4E_6": (33, 217), "MEPH_LVL2_WP4E_9": (-255, 168), "MEPH_LVL2_WP4E_5": (-390, 34), "MEPH_LVL2_WP4E_11": (-432, 47), "MEPH_LVL2_WP4E_0": (448, 28), "MEPH_LVL2_WP4E_10": (-378, 310), },
+            69407: {"MEPH_LVL2_WP4E_9": (-22, 39), "MEPH_LVL2_WP4E_5": (-157, -95), "MEPH_LVL2_WP4E_11": (-199, -82), "MEPH_LVL2_WP4E_10": (-145, 181), "MEPH_LVL2_WP4E_7": (-174, 173), "MEPH_LVL2_WP4E_6": (266, 88), "MEPH_LVL2_WP4E_2": (288, -141), "MEPH_LVL2_WP4E_1": (272, -307), },
 
-            # strairs stuff
+            # exit wp one
             69420: {"MEPH_LAYOUT1_1": (0, 52), "MEPH_LAYOUT1_3": (101, -333), "MEPH_LAYOUT1_2": (-356, -115), "MEPH_LAYOUT1_0": (452, -178), },
-            69421: {"MEPH_0": (-4, 2), },
-            # level 3
-            69422: {"MEPHY_4": (-57, 5), "MEPHY_1": (-58, 4), "MEPHY_3": (-59, 3), "MEPHY_0": (-59, 4), "MEPHY_2": (-59, 5), },
-            69423: {"MEPHY_4": (-627, 176), "MEPHY_1": (-628, 175), "MEPHY_3": (-629, 174), "MEPHY_0": (-629, 175), "MEPHY_2": (-629, 176), },
-            69424: {"MEPHY_4": (-607, 101), "MEPHY_1": (-608, 100), "MEPHY_3": (-609, 99), "MEPHY_0": (-609, 100), "MEPHY_2": (-609, 101), },
-            69425: {"MEPHY_4": (-18, -83), "MEPHY_2": (-20, -83), "MEPHY_3": (-20, -85), },
-            69426: {"MEPHY_4": (-630, -345), "MEPHY_2": (-632, -345), "MEPHY_3": (-632, -347), },
-            69427: {"MEPHY_5": (-635, -350), },
-            69428: {"MEPHY_6": (-637, -354), },
-            69429: {"MEPHY_7": (-326, -232), },
-            69430: {"MEPHY_8": (331, 199), },
+            69421: {"MEPH_LAYOUT1_3": (150, 250), },
+            # level 3          
+            69500: {"MEPH_LVL3_MEPH_5": (-197, -24), "MEPH_LVL3_MEPH_0": (141, 141), "MEPH_LVL3_MEPH_3": (-211, 58), "MEPH_LVL3_MEPH_2": (258, 15), },
+            69501: {"MEPH_LVL3_MEPH_2": (-34, 278), "MEPH_LVL3_MEPH_0": (-150, 404), },
+            69502: {"MEPH_LVL3_MEPH_6": (-121, 2), "MEPH_LVL3_MEPH_7": (-200, -62), "MEPH_LVL3_MEPH_8": (-200, -98), "MEPH_LVL3_MEPH_9": (304, -81), },
+            69503: {"MEPH_LVL3_MEPH_9": (-314, -170), "MEPH_LVL3_MEPH_6": (-739, -87), "MEPH_LVL3_MEPH_7": (-818, -151), "MEPH_LVL3_MEPH_8": (-818, -187), },
+            69504: {"MEPH_LVL3_MEPH_12": (18, 101), "MEPH_LVL3_MEPH_13": (-96, 166), "MEPH_LVL3_MEPH_10": (-277, -22), "MEPH_LVL3_MEPH_14": (-289, 235), "MEPH_LVL3_MEPH_11": (-488, -167), },
+            69505: {"MEPH_LVL3_MEPH_18": (25, -156), "MEPH_LVL3_MEPH_17": (-59, 192), "MEPH_LVL3_MEPH_19": (278, 202), "MEPH_LVL3_MEPH_16": (262, 246), "MEPH_LVL3_MEPH_22": (218, 368), "MEPH_LVL3_MEPH_21": (215, 454), "MEPH_LVL3_MEPH_24": (919, 191), },
+            69506: {"MEPH_LVL3_MEPH_19": (-307, -91), "MEPH_LVL3_MEPH_16": (-323, -47), "MEPH_LVL3_MEPH_24": (334, -102), "MEPH_LVL3_MEPH_22": (-367, 75), "MEPH_LVL3_MEPH_23": (397, -33), "MEPH_LVL3_MEPH_21": (-370, 161), },
+            69507: {"MEPH_LVL3_MEPH_25": (-56, -26), "MEPH_LVL3_MEPH_20": (-80, -71), "MEPH_LVL3_MEPH_35": (46, 220), "MEPH_LVL3_MEPH_34": (162, 241), "MEPH_LVL3_MEPH_27": (293, 71), "MEPH_LVL3_MEPH_26": (342, 174), "MEPH_LVL3_MEPH_28": (401, -64), "MEPH_LVL3_MEPH_23": (-239, -376), },
+            69508: {"MEPH_LVL3_MEPH_27": (79, -11), "MEPH_LVL3_MEPH_26": (128, 92), "MEPH_LVL3_MEPH_34": (-52, 159), "MEPH_LVL3_MEPH_35": (-168, 138), "MEPH_LVL3_MEPH_28": (187, -146), "MEPH_LVL3_MEPH_25": (-270, -108), "MEPH_LVL3_MEPH_20": (-294, -153), },
+            69509: {"MEPH_LVL3_MEPH_33": (88, -143), "MEPH_LVL3_MEPH_26": (-300, -130), "MEPH_LVL3_MEPH_27": (-349, -233), "MEPH_LVL3_MEPH_28": (-241, -368), "MEPH_LVL3_MEPH_34": (-480, -63), "MEPH_LVL3_MEPH_15": (-217, -466), "MEPH_LVL3_MEPH_35": (-596, -84), "MEPH_LVL3_MEPH_25": (-698, -330), },
+            69510: {"MEPH_LVL3_MEPH_29": (407, 427), "MEPH_LVL3_MEPH_31": (854, 335), "MEPH_LVL3_MEPH_30": (955, 415), },
+            69511: {"MEPH_LVL3_MEPH_29": (407, 427), "MEPH_LVL3_MEPH_31": (854, 335), "MEPH_LVL3_MEPH_30": (955, 415), },
+
             #new
-            69431: {"MEPHD_0": (-55, 308), "MEPHD_2": (-389, 204), },
-            69432: {"MEPHD_10": (-34, 203), "MEPHD_9": (-212, -76), },
-            69433: {"MEPHD_15": (-98, 191), "MEPHD_16": (-334, 204), "MEPHD_14": (-555, -203), },
-            69434: {"MEPHD_27": (-24, -188), "MEPHD_33": (136, -253), "MEPHD_26": (-76, -278), "MEPHD_25": (-105, -280), "MEPHD_37": (128, -353), "MEPHD_30": (-445, -387), "MEPHD_34": (-523, -299), "MEPHD_28": (-615, 38), },
-            69435: {"MEPHD_30": (-194, -89), "MEPHD_29": (-240, -90), "MEPHD_34": (-272, -1), "MEPHD_37": (379, -55), "MEPHD_33": (387, 45), "MEPHD_18": (-400, 106), "MEPHD_32": (-224, -413), "MEPHD_31": (-757, -113), },
-            69436: {"MEPHD_33": (-58, -187), "MEPHD_30": (-639, -322), "MEPHD_34": (-717, -233), "MEPHD_29": (-685, -323), "MEPHD_18": (-845, -126), },
-            69437: {"MEPHD_41": (42, -179), "MEPHD_39": (135, -137), "MEPHD_40": (232, -40), "MEPHD_44": (-354, -11), },
-            69438: {"MEPHD_44": (-105, -98), "MEPHD_41": (291, -266), "MEPHD_39": (384, -224), "MEPHD_40": (481, -127), },
+            69600: {"MEPH_LVL3_STARTFIX_2": (-330, 120), "MEPH_LVL3_STARTFIX_0": (-400, 320), "MEPH_LVL3_STARTFIX_1": (-780, 145), },
+            69601: {"MEPH_LVL3_STARTFIX_4": (-230, 75), "MEPH_LVL3_STARTFIX_3": (-415, 370), "MEPH_LVL3_STARTFIX_5": (-815, 260), },
 
 
         }
@@ -679,7 +691,7 @@ if __name__ == "__main__":
     t_finder = TemplateFinder(screen)
     pather = Pather(screen, t_finder)
 
-    display_all_nodes(pather, "repair_btn")
+    display_all_nodes(pather, "MEPH_LVL3")
 
     # # changing node pos and generating new code
     # code = ""
