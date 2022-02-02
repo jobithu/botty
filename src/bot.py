@@ -32,7 +32,7 @@ from char.necro import Necro
 from char.basic import Basic
 from char.basic_ranged import Basic_Ranged
 
-from run import Pindle, ShenkEld, Trav, Nihlatak, Arcane, Diablo, Meph
+from run import Pindle, ShenkEld, Trav, Nihlatak, Arcane, Diablo, Meph, Baal
 from town import TownManager, A1, A2, A3, A4, A5
 
 # Added for dclone ip hunt
@@ -98,6 +98,7 @@ class Bot:
             "run_arcane": self._route_config["run_arcane"],
             "run_diablo": self._route_config["run_diablo"],
             "run_meph": self._route_config["run_meph"],
+            "run_baal": self._route_config["run_baal"],
         }
         # Adapt order to the config
         self._do_runs = OrderedDict((k, self._do_runs[k]) for k in self._route_order if k in self._do_runs and self._do_runs[k])
@@ -112,6 +113,7 @@ class Bot:
         self._arcane = Arcane(self._screen, self._template_finder, self._pather, self._town_manager, self._ui_manager, self._char, self._pickit)
         self._diablo = Diablo(self._screen, self._template_finder, self._pather, self._town_manager, self._ui_manager, self._char, self._pickit)
         self._meph = Meph(self._screen, self._template_finder, self._pather, self._town_manager, self._ui_manager, self._char, self._pickit)
+        self._baal = Baal(self._screen, self._template_finder, self._pather, self._town_manager, self._ui_manager, self._char, self._pickit)
 
         # Create member variables
         self._pick_corpse = pick_corpse
@@ -126,7 +128,7 @@ class Bot:
         self._ran_no_pickup = False
 
         # Create State Machine
-        self._states=['hero_selection', 'town', 'pindle', 'shenk', 'trav', 'nihlatak', 'arcane', 'diablo', 'meph']
+        self._states=['hero_selection', 'town', 'pindle', 'shenk', 'trav', 'nihlatak', 'arcane', 'diablo', 'meph', 'baal']
         self._transitions = [
             { 'trigger': 'create_game', 'source': 'hero_selection', 'dest': 'town', 'before': "on_create_game"},
             # Tasks within town
@@ -139,10 +141,11 @@ class Bot:
             { 'trigger': 'run_arcane', 'source': 'town', 'dest': 'arcane', 'before': "on_run_arcane"},
             { 'trigger': 'run_diablo', 'source': 'town', 'dest': 'nihlatak', 'before': "on_run_diablo"},
             { 'trigger': 'run_meph', 'source': 'town', 'dest': 'meph', 'before': "on_run_meph"},
+            { 'trigger': 'run_baal', 'source': 'town', 'dest': 'baal', 'before': "on_run_baal"},
             # End run / game
-            { 'trigger': 'end_run', 'source': ['shenk', 'pindle', 'nihlatak', 'trav', 'arcane', 'diablo', 'meph'], 'dest': 'town', 'before': "on_end_run"},
-            { 'trigger': 'end_run', 'source': ['shenk', 'pindle', 'nihlatak', 'trav', 'arcane', 'diablo', 'meph'], 'dest': 'town', 'before': "on_end_run"},
-            { 'trigger': 'end_game', 'source': ['town', 'shenk', 'pindle', 'nihlatak', 'trav', 'arcane', 'diablo', 'meph', 'end_run'], 'dest': 'hero_selection', 'before': "on_end_game"},
+            { 'trigger': 'end_run', 'source': ['shenk', 'pindle', 'nihlatak', 'trav', 'arcane', 'diablo', 'meph', 'baal'], 'dest': 'town', 'before': "on_end_run"},
+            { 'trigger': 'end_run', 'source': ['shenk', 'pindle', 'nihlatak', 'trav', 'arcane', 'diablo', 'meph', 'baal'], 'dest': 'town', 'before': "on_end_run"},
+            { 'trigger': 'end_game', 'source': ['town', 'shenk', 'pindle', 'nihlatak', 'trav', 'arcane', 'diablo', 'meph', 'baal', 'end_run'], 'dest': 'hero_selection', 'before': "on_end_game"},
         ]
         self.machine = Machine(model=self, states=self._states, initial="hero_selection", transitions=self._transitions, queued=True)
 
@@ -416,4 +419,13 @@ class Bot:
         self._curr_loc = self._meph.approach(self._curr_loc)
         if self._curr_loc:
             res = self._meph.battle(not self._pre_buffed)
+        self._ending_run_helper(res)
+
+    def on_run_baal(self):
+        res = False
+        self._do_runs["run_baal"] = False
+        self._game_stats.update_location("Baal" if self._config.general['discord_status_condensed'] else "Meph")
+        self._curr_loc = self._baal.approach(self._curr_loc)
+        if self._curr_loc:
+            res = self._baal.battle(not self._pre_buffed)
         self._ending_run_helper(res)

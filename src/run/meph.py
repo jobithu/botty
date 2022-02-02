@@ -58,189 +58,188 @@ class Meph:
             return Location.A3_MEPH_START
         return False
 
-    def wponetravel(self) -> bool:
-            #dostuffto durance 3
-            Logger.debug("DOING WP ONE STUFF")
-            found = False
-            dinky = 1
-            keyboard.send("tab")
-            pos_m = self._screen.convert_abs_to_monitor((-60, 200))
-            self._char.move(pos_m, force_move=True)
-            wait(0.5)
-            pos_m = self._screen.convert_abs_to_monitor((-80, 150))
-            self._char.move(pos_m, force_move=True)
-            score = 1
-            stuck_count = 0
-            found = False 
-            while not found:    
+    def wponetravel(self):
+        #dostuffto durance 3
+        Logger.debug("DOING WP ONE STUFF")
+        found = False
+        dinky = 1
+        keyboard.send("tab")
+        pos_m = self._screen.convert_abs_to_monitor((175, 350))
+        self._char.move(pos_m, force_move=True)
+        wait(0.5)
+        pos_m = self._screen.convert_abs_to_monitor((175, 350))
+        self._char.move(pos_m, force_move=True)
+        score = 1
+        stuck_count = 0
+        found = False 
+        while not found:    
+            found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
+            while dinky < 75 and not found:
+                pos_m = self._screen.convert_abs_to_monitor((random.uniform(10, 250), random.uniform(200, 350)))
+                t0 = self._screen.grab()
+                self._char.move(pos_m, force_tp=True, force_move=True)
+                t1 = self._screen.grab()
+                # check difference between the two frames to determine if tele was good or not
+                diff = cv2.absdiff(t0, t1)
+                diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+                _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
+                score = (float(np.sum(mask)) / mask.size) * (1/255.0)
+                dinky += 1
                 found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
-                while dinky < 75 and not found:
-                    pos_m = self._screen.convert_abs_to_monitor((random.uniform(10, 350), random.uniform(80, 200)))
-                    t0 = self._screen.grab()
-                    self._char.move(pos_m, force_tp=True, force_move=True)
-                    t1 = self._screen.grab()
-                    # check difference between the two frames to determine if tele was good or not
-                    diff = cv2.absdiff(t0, t1)
-                    diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
-                    _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
-                    score = (float(np.sum(mask)) / mask.size) * (1/255.0)
-                    dinky += 1
-                    found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
-                    if score < .15:
-                        stuck_count += 1
-                        if stuck_count >=3:
-                            pos_m = self._screen.convert_abs_to_monitor((-500, -350))
-                            self._char.move(pos_m, force_tp=True)
-                            pos_m = self._screen.convert_abs_to_monitor((-500, 350))
-                            self._char.move(pos_m, force_tp=True)
-                            pos_m = self._screen.convert_abs_to_monitor((-500, 350))
-                            self._char.move(pos_m, force_tp=True)
-                            stuck_count = 0
-                            score = .5
-                            Logger.debug("STUCK")
-                            dinky += 1
-                if dinky >= 25:
-                    t0 = self._screen.grab()
-                    pos_m = self._screen.convert_abs_to_monitor((random.uniform(25, 200), random.uniform(50, 300)))
-                    self._char.move(pos_m, force_tp=True, force_move=True)
-                    t1 = self._screen.grab()
-                    # check difference between the two frames to determine if tele was good or not
-                    diff = cv2.absdiff(t0, t1)
-                    diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
-                    _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
-                    score = (float(np.sum(mask)) / mask.size) * (1/255.0)
-                    dinky += 1
-                    found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
-                    if score < .15:
-                        stuck_count += 1
-                        if stuck_count >=3:
-                            pos_m = self._screen.convert_abs_to_monitor((-150, -200))
-                            self._char.move(pos_m, force_tp=True)
-                            pos_m = self._screen.convert_abs_to_monitor((-350, -150))
-                            self._char.move(pos_m, force_tp=True)
-                            stuck_count = 0
-                            score = .5
-                            Logger.debug("STUCK")
-                            dinky += 1
-                if dinky >= 60:
-                    t0 = self._screen.grab()
-                    pos_m = self._screen.convert_abs_to_monitor((random.uniform(25, 200), random.uniform(50, 300)))
-                    self._char.move(pos_m, force_tp=True, force_move=True)
-                    t1 = self._screen.grab()
-                    # check difference between the two frames to determine if tele was good or not
-                    diff = cv2.absdiff(t0, t1)
-                    diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
-                    _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
-                    score = (float(np.sum(mask)) / mask.size) * (1/255.0)
-                    self._char.move(pos_m, force_tp=True, force_move=True)
-                    dinky += 1
-                    found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
-                    if score < .15:
-                        stuck_count += 1
-                        if stuck_count >=3:
-                            pos_m = self._screen.convert_abs_to_monitor((-150, -200))
-                            self._char.move(pos_m, force_tp=True)
-                            pos_m = self._screen.convert_abs_to_monitor((-350, -150))
-                            self._char.move(pos_m, force_tp=True)
-                            stuck_count = 0
-                            score = .5
-                            Logger.debug("STUCK")
-                            dinky += 1
+                if score < .15:
+                    stuck_count += 1
+                    if stuck_count >=3:
+                        pos_m = self._screen.convert_abs_to_monitor((-500, -350))
+                        self._char.move(pos_m, force_tp=True)
+                        self._char.move(pos_m, force_tp=True)
+                        pos_m = self._screen.convert_abs_to_monitor((-500, 275))
+                        self._char.move(pos_m, force_tp=True)
+                        stuck_count = 0
+                        score = .5
+                        Logger.debug("STUCK")
+                        dinky += 1
+            if dinky >= 25:
+                t0 = self._screen.grab()
+                pos_m = self._screen.convert_abs_to_monitor((random.uniform(25, 200), random.uniform(50, 300)))
+                self._char.move(pos_m, force_tp=True, force_move=True)
+                t1 = self._screen.grab()
+                # check difference between the two frames to determine if tele was good or not
+                diff = cv2.absdiff(t0, t1)
+                diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+                _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
+                score = (float(np.sum(mask)) / mask.size) * (1/255.0)
+                dinky += 1
+                found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
+                if score < .15:
+                    stuck_count += 1
+                    if stuck_count >=3:
+                        pos_m = self._screen.convert_abs_to_monitor((-150, -200))
+                        self._char.move(pos_m, force_tp=True)
+                        pos_m = self._screen.convert_abs_to_monitor((-350, -150))
+                        self._char.move(pos_m, force_tp=True)
+                        stuck_count = 0
+                        score = .5
+                        Logger.debug("STUCK")
+                        dinky += 1
+            if dinky >= 60:
+                t0 = self._screen.grab()
+                pos_m = self._screen.convert_abs_to_monitor((random.uniform(25, 200), random.uniform(50, 300)))
+                self._char.move(pos_m, force_tp=True, force_move=True)
+                t1 = self._screen.grab()
+                # check difference between the two frames to determine if tele was good or not
+                diff = cv2.absdiff(t0, t1)
+                diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+                _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
+                score = (float(np.sum(mask)) / mask.size) * (1/255.0)
+                self._char.move(pos_m, force_tp=True, force_move=True)
+                dinky += 1
+                found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
+                if score < .15:
+                    stuck_count += 1
+                    if stuck_count >=3:
+                        pos_m = self._screen.convert_abs_to_monitor((-150, -200))
+                        self._char.move(pos_m, force_tp=True)
+                        pos_m = self._screen.convert_abs_to_monitor((-350, -150))
+                        self._char.move(pos_m, force_tp=True)
+                        stuck_count = 0
+                        score = .5
+                        Logger.debug("STUCK")
+                        dinky += 1
             
 
-    def wptwotravel(self) -> bool:
-            #dostuffto durance 3
-            found = False
-            dinky = 0
-            stuck_count = 0
-            keyboard.send("tab")
-            pos_m = self._screen.convert_abs_to_monitor((-60, 200))
-            self._char.move(pos_m, force_move=True)
-            wait(0.5)
-            pos_m = self._screen.convert_abs_to_monitor((-80, 150))
-            self._char.move(pos_m, force_move=True)
-            score = 1
-            found = False 
-            while not found:    
+    def wptwotravel(self):
+        #dostuffto durance 3
+        found = False
+        dinky = 0
+        stuck_count = 0
+        keyboard.send("tab")
+        pos_m = self._screen.convert_abs_to_monitor((-60, 200))
+        self._char.move(pos_m, force_move=True)
+        wait(0.5)
+        pos_m = self._screen.convert_abs_to_monitor((-80, 150))
+        self._char.move(pos_m, force_move=True)
+        score = 1
+        found = False 
+        while not found:    
+            found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
+            while dinky < 75 and not found:
+                pos_m = self._screen.convert_abs_to_monitor((random.uniform(-10, -350), random.uniform(80, 200)))
+                t0 = self._screen.grab()
+                self._char.move(pos_m, force_tp=True, force_move=True)
+                t1 = self._screen.grab()
+                # check difference between the two frames to determine if tele was good or not
+                diff = cv2.absdiff(t0, t1)
+                diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+                _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
+                score = (float(np.sum(mask)) / mask.size) * (1/255.0)
+                dinky += 1
                 found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
-                while dinky < 75 and not found:
-                    pos_m = self._screen.convert_abs_to_monitor((random.uniform(-10, -350), random.uniform(80, 200)))
-                    t0 = self._screen.grab()
-                    self._char.move(pos_m, force_tp=True, force_move=True)
-                    t1 = self._screen.grab()
-                    # check difference between the two frames to determine if tele was good or not
-                    diff = cv2.absdiff(t0, t1)
-                    diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
-                    _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
-                    score = (float(np.sum(mask)) / mask.size) * (1/255.0)
-                    dinky += 1
-                    found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
-                    if score < .15:
-                        stuck_count += 1
-                        if stuck_count >=3:
-                            pos_m = self._screen.convert_abs_to_monitor((500, -350))
-                            self._char.move(pos_m, force_tp=True)
-                            pos_m = self._screen.convert_abs_to_monitor((500, 350))
-                            self._char.move(pos_m, force_tp=True)
-                            pos_m = self._screen.convert_abs_to_monitor((500, -350))
-                            self._char.move(pos_m, force_tp=True)
-                            stuck_count = 0
-                            score = .5
-                            Logger.debug("STUCK")
-                            dinky += 1
-                if dinky >= 25:
-                    t0 = self._screen.grab()
-                    pos_m = self._screen.convert_abs_to_monitor((random.uniform(-10, -350), random.uniform(-80, -200)))
-                    self._char.move(pos_m, force_tp=True, force_move=True)
-                    t1 = self._screen.grab()
-                    # check difference between the two frames to determine if tele was good or not
-                    diff = cv2.absdiff(t0, t1)
-                    diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
-                    _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
-                    score = (float(np.sum(mask)) / mask.size) * (1/255.0)
-                    dinky += 1
-                    found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
-                    if score < .15:
-                        stuck_count += 1
-                        if stuck_count >=3:
-                            pos_m = self._screen.convert_abs_to_monitor((500, -350))
-                            self._char.move(pos_m, force_tp=True)
-                            pos_m = self._screen.convert_abs_to_monitor((500, 350))
-                            self._char.move(pos_m, force_tp=True)
-                            pos_m = self._screen.convert_abs_to_monitor((500, -350))
-                            self._char.move(pos_m, force_tp=True)
-                            stuck_count = 0
-                            score = .5
-                            Logger.debug("STUCK")
-                            dinky += 1
-                if dinky >= 60:
-                    t0 = self._screen.grab()
-                    pos_m = self._screen.convert_abs_to_monitor((random.uniform(-10, 150), random.uniform(-80, -200)))
-                    self._char.move(pos_m, force_tp=True, force_move=True)
-                    t1 = self._screen.grab()
-                    # check difference between the two frames to determine if tele was good or not
-                    diff = cv2.absdiff(t0, t1)
-                    diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
-                    _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
-                    score = (float(np.sum(mask)) / mask.size) * (1/255.0)
-                    self._char.move(pos_m, force_tp=True, force_move=True)
-                    dinky += 1
-                    found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
-                    if score < .15:
-                        stuck_count += 1
-                        if stuck_count >=3:
-                            pos_m = self._screen.convert_abs_to_monitor((500, -350))
-                            self._char.move(pos_m, force_tp=True)
-                            pos_m = self._screen.convert_abs_to_monitor((500, 350))
-                            self._char.move(pos_m, force_tp=True)
-                            pos_m = self._screen.convert_abs_to_monitor((500, -350))
-                            self._char.move(pos_m, force_tp=True)
-                            stuck_count = 0
-                            score = .5
-                            Logger.debug("STUCK")
-                            dinky += 1
+                if score < .15:
+                    stuck_count += 1
+                    if stuck_count >=3:
+                        pos_m = self._screen.convert_abs_to_monitor((500, -350))
+                        self._char.move(pos_m, force_tp=True)
+                        pos_m = self._screen.convert_abs_to_monitor((500, 350))
+                        self._char.move(pos_m, force_tp=True)
+                        pos_m = self._screen.convert_abs_to_monitor((500, -350))
+                        self._char.move(pos_m, force_tp=True)
+                        stuck_count = 0
+                        score = .5
+                        Logger.debug("STUCK")
+                        dinky += 1
+            if dinky >= 25:
+                t0 = self._screen.grab()
+                pos_m = self._screen.convert_abs_to_monitor((random.uniform(-10, -350), random.uniform(-80, -200)))
+                self._char.move(pos_m, force_tp=True, force_move=True)
+                t1 = self._screen.grab()
+                # check difference between the two frames to determine if tele was good or not
+                diff = cv2.absdiff(t0, t1)
+                diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+                _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
+                score = (float(np.sum(mask)) / mask.size) * (1/255.0)
+                dinky += 1
+                found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
+                if score < .15:
+                    stuck_count += 1
+                    if stuck_count >=3:
+                        pos_m = self._screen.convert_abs_to_monitor((500, -350))
+                        self._char.move(pos_m, force_tp=True)
+                        pos_m = self._screen.convert_abs_to_monitor((500, 350))
+                        self._char.move(pos_m, force_tp=True)
+                        pos_m = self._screen.convert_abs_to_monitor((500, -350))
+                        self._char.move(pos_m, force_tp=True)
+                        stuck_count = 0
+                        score = .5
+                        Logger.debug("STUCK")
+                        dinky += 1
+            if dinky >= 60:
+                t0 = self._screen.grab()
+                pos_m = self._screen.convert_abs_to_monitor((random.uniform(-10, 150), random.uniform(-80, -200)))
+                self._char.move(pos_m, force_tp=True, force_move=True)
+                t1 = self._screen.grab()
+                # check difference between the two frames to determine if tele was good or not
+                diff = cv2.absdiff(t0, t1)
+                diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+                _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
+                score = (float(np.sum(mask)) / mask.size) * (1/255.0)
+                self._char.move(pos_m, force_tp=True, force_move=True)
+                dinky += 1
+                found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
+                if score < .15:
+                    stuck_count += 1
+                    if stuck_count >=3:
+                        pos_m = self._screen.convert_abs_to_monitor((500, -350))
+                        self._char.move(pos_m, force_tp=True)
+                        pos_m = self._screen.convert_abs_to_monitor((500, 350))
+                        self._char.move(pos_m, force_tp=True)
+                        pos_m = self._screen.convert_abs_to_monitor((500, -350))
+                        self._char.move(pos_m, force_tp=True)
+                        stuck_count = 0
+                        score = .5
+                        Logger.debug("STUCK")
+                        dinky += 1
 
-    def wpthreetravel(self) -> bool:
+    def wpthreetravel(self):
         #dostuffto durance 3
         Logger.debug("DOING WP THREE STUFF")
         dinky = 1
@@ -251,7 +250,7 @@ class Meph:
         while not found:    
             found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
             while dinky < 100 and not found:
-                pos_m = self._screen.convert_abs_to_monitor((random.uniform(-400, 10), random.uniform(-50, -250)))
+                pos_m = self._screen.convert_abs_to_monitor((random.uniform(-500, 150), random.uniform(75, -250)))
                 t0 = self._screen.grab()
                 self._char.move(pos_m, force_tp=True, force_move=True)
                 t1 = self._screen.grab()
@@ -290,10 +289,11 @@ class Meph:
                 if score < .15:
                     stuck_count += 1
                     if stuck_count >=3:
-                        pos_m = self._screen.convert_abs_to_monitor((-150, -200))
+                        pos_m = self._screen.convert_abs_to_monitor((550, 350))
                         self._char.move(pos_m, force_tp=True)
                         self._char.move(pos_m, force_tp=True)
-                        pos_m = self._screen.convert_abs_to_monitor((5, -150))
+                        pos_m = self._screen.convert_abs_to_monitor((550, -100))
+                        self._char.move(pos_m, force_tp=True)
                         self._char.move(pos_m, force_tp=True)
                         stuck_count = 0
                         score = .5
@@ -319,12 +319,13 @@ class Meph:
                         self._char.move(pos_m, force_tp=True)
                         pos_m = self._screen.convert_abs_to_monitor((550, -100))
                         self._char.move(pos_m, force_tp=True)
+                        self._char.move(pos_m, force_tp=True)
                         stuck_count = 0
                         score = .5
                         Logger.debug("STUCK")
                         dinky += 1
 
-    def wpfourtravel(self) -> bool:
+    def wpfourtravel(self):
         #dostuffto durance 3
         dinky = 1
         keyboard.send("tab")
@@ -419,7 +420,7 @@ class Meph:
                 return False
         layout = template_match.name
         Logger.debug(layout)
-        if layout == "WPTHREE":
+        if layout == 'WPTHREE':
             self.wpthreetravel()
             ##ending clicker get in
             dinky = 0
@@ -452,8 +453,7 @@ class Meph:
                         stuck_count = 0
                         score = .5
                         Logger.debug("STUCK")
-                        dinky += 1
-                    
+                        dinky += 1                    
             picked_up_items = False 
             found_loading_screen_func = lambda: self._ui_manager.wait_for_loading_screen(2.0)
             if not self._char.select_by_template(["MEPH_LVL2_WP3E_3"], found_loading_screen_func, threshold=0.3, time_out=4):
@@ -463,7 +463,7 @@ class Meph:
             # Wait until templates in durance of hate lvl 3 entrance are found
             if not self._template_finder.search_and_wait(["MEPH_LVL3_1"], threshold=0.8, time_out=20).valid:
                 return False
-        elif layout == "WPONE1":
+        elif layout == 'MEPH_LVL2_WP1' or layout == "MEPH_LVL2_WP1_0" or layout == "MEPH_LVL2_WP1_1" or layout == "MEPH_LVL2_WP1_2" or layout == "MEPH_LVL2_WP1_3" or layout == "MEPH_LVL2_WP1_4" or layout == "MEPH_LVL2_WP1_5" or layout == "MEPH_LVL2_WP1_6" or layout == "MEPH_LVL2_WP1_7" or layout == "MEPH_LVL2_WP1_8" or layout == "MEPH_LVL2_WP1_9":
             self.wponetravel()
             ##ending clicker get in
             dinky = 0
@@ -499,8 +499,7 @@ class Meph:
             if not self._pather.traverse_nodes([69420], self._char, time_out=3):
                 self._pather.traverse_nodes([69405], self._char, time_out=3)
                 pos_m = self._screen.convert_abs_to_monitor((random.randint(-70, -70), random.randint(-70, -70)))
-                self._char.move(pos_m, force_move=True)
-                    
+                self._char.move(pos_m, force_move=True)                    
             picked_up_items = False 
             found_loading_screen_func = lambda: self._ui_manager.wait_for_loading_screen(2.0)
             if not self._char.select_by_template(["MEPH_EXIT1"], found_loading_screen_func, threshold=0.63, time_out=4):
@@ -512,9 +511,9 @@ class Meph:
             # Wait until templates in durance of hate lvl 3 entrance are found
             if not self._template_finder.search_and_wait(["MEPH_LVL3_1"], threshold=0.8, time_out=20).valid:
                 return False
-        elif layout == "WPTWO":
+        elif layout == 'WPTWO':
             self.wptwotravel()
-        elif layout == "WPFOUR1":
+        elif layout == 'WPFOUR1':
             self.wpfourtravel()
             ##ending clicker get in
             dinky = 0
@@ -557,8 +556,7 @@ class Meph:
                             self._char.move(pos_m, force_tp=True, force_move=True)
                         score = .5
                         Logger.debug("STUCK")
-                        dinky += 1
-                    
+                        dinky += 1                    
             picked_up_items = False 
             found_loading_screen_func = lambda: self._ui_manager.wait_for_loading_screen(2.0)
             self._pather.traverse_nodes([69406, 69407], self._char, time_out=3)
@@ -572,8 +570,7 @@ class Meph:
             if not self._template_finder.search_and_wait(["MEPH_LVL3_1"], threshold=0.65, time_out=20).valid:
                 return False
         else:
-            return False
-        
+            return False        
         ##ending clicker get in
        #  dinky = 0
        #roomfound = False
@@ -670,30 +667,32 @@ class Meph:
             #    self._char.move(pos_m, force_move=True)
 
         Logger.debug("Trying to path to meph")
-        Logger.debug("600")
-        self._pather.traverse_nodes([69600], self._char, threshold=0.5, time_out=3, force_move=True)
-        Logger.debug("601")
-        self._pather.traverse_nodes([69601], self._char, threshold=0.5, time_out=3, force_move=True)
-        Logger.debug("505")
-        self._pather.traverse_nodes([69505], self._char, threshold=0.5, time_out=3, force_move=True)
-        Logger.debug("506 TEMP FORCED MOVE")
-        #self._pather.traverse_nodes([69506], self._char, threshold=0.75, time_out=3, force_move=True)
-        pos_m = self._screen.convert_abs_to_monitor((-400, -200))
-        self._char.move(pos_m, force_move=True) 
-        Logger.debug("507")
-        self._pather.traverse_nodes([69507], self._char, threshold=0.75, time_out=3, force_move=True)
-        Logger.debug("508")
-        self._pather.traverse_nodes([69508], self._char, threshold=0.75, time_out=3, force_move=True)
-        Logger.debug("509")
-        self._pather.traverse_nodes([69509], self._char, threshold=0.75, time_out=3, force_move=True)
+        Logger.debug("Finish Arch move and then Up Middle and To Boss")
+        self._pather.traverse_nodes_fixed("meph_to_meph", self._char)
+        wait(0.5)
+        # Logger.debug("501")
+        # self._pather.traverse_nodes([69501], self._char, threshold=0.01, time_out=3, force_move=True)
+        # Logger.debug("502")
+        # self._pather.traverse_nodes([69502], self._char, threshold=0.5, time_out=3, force_move=True)
+        # #self._pather.traverse_nodes([69506], self._char, threshold=0.75, time_out=3, force_move=True)
+        # #pos_m = self._screen.convert_abs_to_monitor((-400, -200))
+        # self._char.move(pos_m, force_move=True) 
+        # Logger.debug("503")
+        # self._pather.traverse_nodes([69503], self._char, threshold=0.75, time_out=3, force_move=True)
+        # Logger.debug("504")
+        # self._pather.traverse_nodes([69504], self._char, threshold=0.75, time_out=3, force_move=True)
+        # Logger.debug("505")
+        # self._pather.traverse_nodes([69505], self._char, threshold=0.75, time_out=3, force_move=True)
         Logger.debug("We gonna die to meph lawllll")
         self._char.kill_meph()
-        self._pather.traverse_nodes([69510], self._char, time_out=3)
-        if not self._char.select_by_template(["MEPH_LVL3_MEPH_PORTAL"], found_loading_screen_func, threshold=0.3, time_out=4):
+        Logger.debug("Go to Last Node and Use Red Portal")
+        self._pather.traverse_nodes_fixed("meph_exit", self._char)
+        self._pather.traverse_nodes([69506, 69505], self._char, time_out=3)
+        if not self._char.select_by_template(["MEPH_LVL3_MEPH_PORTAL"], found_loading_screen_func, threshold=0.8, time_out=4):
             # do a random tele jump and try again
-            pos_m = self._screen.convert_abs_to_monitor((-75, -150))
+            pos_m = self._screen.convert_abs_to_monitor((5, 25))
             self._char.move(pos_m, force_move=True)
-            if not self._char.select_by_template(["MEPH_LVL3_MEPH_PORTAL"], found_loading_screen_func, threshold=0.3, time_out=4):
+            if not self._char.select_by_template(["MEPH_LVL3_MEPH_PORTAL"], found_loading_screen_func, threshold=0.6, time_out=4):
                 return False
         # Wait until templates in durance of hate lvl 3 entrance are found
         loc = Location.A3_MEPH_END
