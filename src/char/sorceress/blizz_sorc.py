@@ -695,6 +695,9 @@ class BlizzSorc(Sorceress):
     def kill_meph(self) -> bool:
         self._cast_static()
         self._blizzard((10, -10), spray=10)
+        template_match = self._template_finder.search_and_wait(["MEPH_MEPH_BOSS"], best_match=True, threshold=0.8, time_out=0.1, use_grayscale=False)
+        pos_m = self._screen.convert_screen_to_monitor(template_match.position)
+        self.move(pos_m, force_move=True)
         self._ice_blast((5, -5), spray=20)
         self._blizzard((0, 0), spray=10)
         self._cast_static()

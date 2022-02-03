@@ -296,7 +296,8 @@ class Pather:
             69400: {"MEPH_LVL2_WP1_2": (-4, -60), "MEPH_LVL2_WP1_5": (-33, -109), "MEPH_LVL2_WP1_4": (173, -43), "MEPH_LVL2_WP1_6": (-25, 220), "MEPH_LVL2_WP1_0": (349, 55), "MEPH_LVL2_WP1_8": (398, -31), "MEPH_LVL2_WP1_3": (-435, 44), "MEPH_LVL2_WP1_7": (-464, 2), },
             69401: {"MEPH_LVL2_WP1_8": (-106, 246), "MEPH_LVL2_WP1_0": (-155, 332), "MEPH_LVL2_WP1_4": (-331, 234), "MEPH_LVL2_WP1_5": (-537, 168), "MEPH_LVL2_WP1_6": (-529, 497), "MEPH_LVL2_WP1_7": (-968, 279), },
             # level 2 exit
-            69499: {"MEPH_LVL2_WP3E_1": (0, 0), "MEPH_LVL2_WP3E_0": (0, 0), "MEPH_LVL2_WP3E_1": (0, 0), "MEPH_EXIT2": (0, 0), },
+            69900: {"MEPH_LVL2_WP2E_11": (-183, 79), "MEPH_LVL2_WP2E_1": (-198, 62), "MEPH_LVL2_WP2E_19": (-42, 234), "MEPH_LVL2_WP2E_15": (100, 234), "MEPH_LVL2_WP2E_24": (199, 190), "MEPH_LVL2_WP2E_21": (202, 211), "MEPH_LVL2_WP2E_13": (215, 224), "MEPH_LVL2_WP2E_10": (-312, -16), },
+
             #exit wp one
             69402: {"MEPH_LVL2_WP1E_14": (-50, -47), "MEPH_LVL2_WP1E_7": (42, -75), "MEPH_LVL2_WP1E_8": (38, -117), "MEPH_LVL2_WP1E_6": (152, 17), "MEPH_LVL2_WP1E_9": (-22, -188), "MEPH_LVL2_WP1E_15": (-183, -58), "MEPH_LVL2_WP1E_5": (180, 80), "MEPH_LVL2_WP1E_10": (-21, -215), },
             69403: {"MEPH_LVL2_WP1E_6": (63, 34), "MEPH_LVL2_WP1E_7": (-47, -58), "MEPH_LVL2_WP1E_8": (-51, -100), "MEPH_LVL2_WP1E_5": (91, 97), "MEPH_LVL2_WP1E_12": (132, 19), "MEPH_LVL2_WP1E_14": (-139, -30), "MEPH_LVL2_WP1E_11": (180, 80), "MEPH_LVL2_WP1E_9": (-111, -171), },
@@ -305,6 +306,7 @@ class Pather:
             # exit wp four
             69406: {"MEPH_LVL2_WP4E_2": (55, -12), "MEPH_LVL2_WP4E_1": (39, -178), "MEPH_LVL2_WP4E_6": (33, 217), "MEPH_LVL2_WP4E_9": (-255, 168), "MEPH_LVL2_WP4E_5": (-390, 34), "MEPH_LVL2_WP4E_11": (-432, 47), "MEPH_LVL2_WP4E_0": (448, 28), "MEPH_LVL2_WP4E_10": (-378, 310), },
             69407: {"MEPH_LVL2_WP4E_9": (-22, 39), "MEPH_LVL2_WP4E_5": (-157, -95), "MEPH_LVL2_WP4E_11": (-199, -82), "MEPH_LVL2_WP4E_10": (-145, 181), "MEPH_LVL2_WP4E_7": (-174, 173), "MEPH_LVL2_WP4E_6": (266, 88), "MEPH_LVL2_WP4E_2": (288, -141), "MEPH_LVL2_WP4E_1": (272, -307), },
+            # maybe 69499: {"MEPH_LVL2_WP22E_5": (-101, -29), "MEPH_LVL2_WP22E_6": (-105, -22), "MEPH_LVL2_WP22E_7": (-53, -103), "MEPH_LVL2_WP22E_4": (-105, 49), "MEPH_LVL2_WP22E_3": (-95, 75), "MEPH_LVL2_WP22E_2": (-91, 125), "MEPH_LVL2_WP22E_9": (-99, -140), "MEPH_LVL2_WP22E_8": (-96, 333), },
 
             # exit wp one
             69420: {"MEPH_LAYOUT1_1": (0, 52), "MEPH_LAYOUT1_3": (101, -333), "MEPH_LAYOUT1_2": (-356, -115), "MEPH_LAYOUT1_0": (452, -178), },
