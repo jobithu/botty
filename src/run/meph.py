@@ -64,18 +64,13 @@ class Meph:
         found = False
         dinky = 1
         keyboard.send("tab")
-        pos_m = self._screen.convert_abs_to_monitor((175, 350))
-        self._char.move(pos_m, force_move=True)
-        wait(0.5)
-        pos_m = self._screen.convert_abs_to_monitor((175, 350))
-        self._char.move(pos_m, force_move=True)
         score = 1
         stuck_count = 0
         found = False 
         while not found:    
             found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
             while dinky < 75 and not found:
-                pos_m = self._screen.convert_abs_to_monitor((random.uniform(10, 250), random.uniform(200, 350)))
+                pos_m = self._screen.convert_abs_to_monitor((random.uniform(10, 250), random.uniform(-100, -300)))
                 t0 = self._screen.grab()
                 self._char.move(pos_m, force_tp=True, force_move=True)
                 t1 = self._screen.grab()
@@ -667,9 +662,13 @@ class Meph:
             #    self._char.move(pos_m, force_move=True)
 
         Logger.debug("Trying to path to meph")
-        Logger.debug("Finish Arch move and then Up Middle and To Boss")
         self._pather.traverse_nodes_fixed("meph_to_meph", self._char)
         wait(0.5)
+        self._pather.traverse_nodes([69104], self._char, time_out=3)
+        pos_m = self._screen.convert_abs_to_monitor((-20, -200))
+        self._char.move(pos_m, force_tp=True)
+        pos_m = self._screen.convert_abs_to_monitor((20, 200))
+        self._char.move(pos_m, force_tp=True)
         # Logger.debug("501")
         # self._pather.traverse_nodes([69501], self._char, threshold=0.01, time_out=3, force_move=True)
         # Logger.debug("502")
@@ -683,11 +682,15 @@ class Meph:
         # self._pather.traverse_nodes([69504], self._char, threshold=0.75, time_out=3, force_move=True)
         # Logger.debug("505")
         # self._pather.traverse_nodes([69505], self._char, threshold=0.75, time_out=3, force_move=True)
+        # self._pather.traverse_nodes([69106], self._char, time_out=3)
+        # wait(1)
+        # self._pather.traverse_nodes([69107], self._char, time_out=3)
+        # self._pather.traverse_nodes([69106], self._char, time_out=3)
         Logger.debug("We gonna die to meph lawllll")
         self._char.kill_meph()
         Logger.debug("Go to Last Node and Use Red Portal")
-        self._pather.traverse_nodes_fixed("meph_exit", self._char)
-        self._pather.traverse_nodes([69506, 69505], self._char, time_out=3)
+        
+        self._pather.traverse_nodes([69104], self._char, time_out=3)
         if not self._char.select_by_template(["MEPH_LVL3_MEPH_PORTAL"], found_loading_screen_func, threshold=0.8, time_out=4):
             # do a random tele jump and try again
             pos_m = self._screen.convert_abs_to_monitor((5, 25))

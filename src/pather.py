@@ -85,8 +85,8 @@ class Location:
     A4_DIABLO_C_LAYOUTCHECK = "a4_diablo_c_layoutcheck"
     A4_DIABLO_END = "a4_diablo_end"
     # Baal
-    A3_BAAL_START = "a5_baal_start"
-    A3_BAAL_END = "a5_baal_end"
+    A5_BAAL_START = "a5_baal_start"
+    A5_BAAL_END = "a5_baal_end"
 
 class Pather:
     """
@@ -331,8 +331,15 @@ class Pather:
             69506: {"MEPH_LVL3_DEAD_44": (-17, 36), "MEPH_LVL3_DEAD_33": (198, 126), "MEPH_LVL3_DEAD_38": (534, 244), "MEPH_LVL3_DEAD_36": (528, 464), "MEPH_LVL3_DEAD_42": (865, 316), },
 
             #new
-            69600: {"MEPH_LVL3_STARTFIX_2": (-330, 120), "MEPH_LVL3_STARTFIX_0": (-400, 320), "MEPH_LVL3_STARTFIX_1": (-780, 145), },
-            69601: {"MEPH_LVL3_STARTFIX_4": (-230, 75), "MEPH_LVL3_STARTFIX_3": (-415, 370), "MEPH_LVL3_STARTFIX_5": (-815, 260), },
+            69100: {"MEPH_LVL3_ALL_5": (-482, 451), "MEPH_LVL3_ALL_1": (-462, 489), "MEPH_LVL3_ALL_2": (-645, 537), "MEPH_LVL3_ALL_4": (-799, 300), "MEPH_LVL3_ALL_0": (-799, 387), },
+            69101: {"MEPH_LVL3_ALL_8": (-171, 6), "MEPH_LVL3_ALL_9": (-434, -167), "MEPH_LVL3_ALL_6": (-591, -32), "MEPH_LVL3_ALL_7": (-1035, -38), },
+            69102: {"MEPH_LVL3_ALL_22": (-12, -42), "MEPH_LVL3_ALL_36": (108, -245), "MEPH_LVL3_ALL_13": (-277, -51), "MEPH_LVL3_ALL_15": (-299, 72), "MEPH_LVL3_ALL_16": (248, -189), "MEPH_LVL3_ALL_31": (307, -204), "MEPH_LVL3_ALL_29": (336, -436), "MEPH_LVL3_ALL_21": (407, -372), },
+            69103: {"MEPH_LVL3_ALL_14": (202, 86), "MEPH_LVL3_ALL_25": (205, -82), "MEPH_LVL3_ALL_34": (215, -71), "MEPH_LVL3_ALL_17": (240, 172), "MEPH_LVL3_ALL_31": (-58, -341), "MEPH_LVL3_ALL_16": (-117, -326), "MEPH_LVL3_ALL_19": (378, 169), "MEPH_LVL3_ALL_22": (-377, -179), },
+            69104: {"MEPH_LVL3_ALL_18": (-24, -20), "MEPH_LVL3_ALL_36": (-17, -84), "MEPH_LVL3_ALL_20": (-98, -58), "MEPH_LVL3_ALL_22": (-137, 119), "MEPH_LVL3_ALL_19": (-154, -105), "MEPH_LVL3_ALL_31": (182, -43), "MEPH_LVL3_ALL_30": (212, -30), "MEPH_LVL3_ALL_17": (-291, -103), },
+            69105: {"MEPH_LVL3_ALL_25": (7, -11), "MEPH_LVL3_ALL_24": (11, -9), "MEPH_LVL3_ALL_34": (17, 0), "MEPH_LVL3_ALL_30": (-226, -257), "MEPH_LVL3_ALL_23": (304, -170), "MEPH_LVL3_ALL_31": (-256, -270), "MEPH_LVL3_ALL_21": (-156, -438), "MEPH_LVL3_ALL_28": (-102, -475), },
+            69106: {"MEPH_LVL3_ALL_30": (-59, 19), "MEPH_LVL3_ALL_21": (11, -162), "MEPH_LVL3_ALL_20": (-369, -9), "MEPH_LVL3_ALL_19": (-426, -57), "MEPH_LVL3_ALL_22": (-408, 168), "MEPH_LVL3_ALL_32": (-490, -6), "MEPH_LVL3_ALL_17": (-563, -55), "MEPH_LVL3_ALL_14": (-601, -140), },
+            69107: {"MEPH_LVL3_ALL_21": (123, 73), "MEPH_LVL3_ALL_30": (53, 254), "MEPH_LVL3_ALL_20": (-257, 226), "MEPH_LVL3_ALL_19": (-314, 178), "MEPH_LVL3_ALL_32": (-378, 229), "MEPH_LVL3_ALL_17": (-451, 180), "MEPH_LVL3_ALL_14": (-489, 95), "MEPH_LVL3_ALL_22": (-296, 403), },
+
 
 
         }

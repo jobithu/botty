@@ -64,18 +64,13 @@ class Baal:
             found = False
             dinky = 1
             keyboard.send("tab")
-            pos_m = self._screen.convert_abs_to_monitor((-60, 200))
-            self._char.move(pos_m, force_move=True)
-            wait(0.5)
-            pos_m = self._screen.convert_abs_to_monitor((-80, 150))
-            self._char.move(pos_m, force_move=True)
             score = 1
             stuck_count = 0
             found = False 
             while not found:    
-                found = self._template_finder.search_and_wait(["RED_GOOP_NO_WP", "RED_GOOP_PURPLE"], threshold=0.5, time_out=0.1, take_ss=False, use_grayscale=False).valid and not self._template_finder.search_and_wait(["TINY_BABY_WP"], threshold=0.8, time_out=0.1, take_ss=False, use_grayscale=False).valid
+                found = self._template_finder.search_and_wait(["RED_GOOP_PURPLE"], threshold=0.7, time_out=0.1, take_ss=False, use_grayscale=False).valid 
                 while dinky < 75 and not found:
-                    pos_m = self._screen.convert_abs_to_monitor((random.uniform(10, 350), random.uniform(125, 400)))
+                    pos_m = self._screen.convert_abs_to_monitor((random.uniform(150, 350), random.uniform(-50, -400)))
                     t0 = self._screen.grab()
                     self._char.move(pos_m, force_tp=True, force_move=True)
                     t1 = self._screen.grab()
@@ -85,20 +80,19 @@ class Baal:
                     _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
                     score = (float(np.sum(mask)) / mask.size) * (1/255.0)
                     dinky += 1
-                    found = self._template_finder.search_and_wait(["RED_GOOP_NO_WP", "RED_GOOP_PURPLE"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
-                    if score < .15:
-                        stuck_count += 1
-                        if stuck_count >=3:
-                            pos_m = self._screen.convert_abs_to_monitor((-500, -350))
-                            self._char.move(pos_m, force_tp=True)
-                            pos_m = self._screen.convert_abs_to_monitor((-500, 350))
-                            self._char.move(pos_m, force_tp=True)
-                            pos_m = self._screen.convert_abs_to_monitor((-500, 350))
-                            self._char.move(pos_m, force_tp=True)
-                            stuck_count = 0
-                            score = .5
-                            Logger.debug("STUCK")
-                            dinky += 1
+                    found = self._template_finder.search_and_wait(["RED_GOOP_PURPLE"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
+                    stuck_count += 1
+                    if stuck_count >=3:
+                        pos_m = self._screen.convert_abs_to_monitor((-500, -350))
+                        self._char.move(pos_m, force_tp=True)
+                        pos_m = self._screen.convert_abs_to_monitor((-500, 350))
+                        self._char.move(pos_m, force_tp=True)
+                        pos_m = self._screen.convert_abs_to_monitor((-500, 350))
+                        self._char.move(pos_m, force_tp=True)
+                        stuck_count = 0
+                        score = .5
+                        Logger.debug("STUCK")
+                        dinky += 1
                 if dinky >= 25:
                     t0 = self._screen.grab()
                     pos_m = self._screen.convert_abs_to_monitor((random.uniform(25, 200), random.uniform(50, 300)))
@@ -110,7 +104,7 @@ class Baal:
                     _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
                     score = (float(np.sum(mask)) / mask.size) * (1/255.0)
                     dinky += 1
-                    found = self._template_finder.search_and_wait(["RED_GOOP_NO_WP", "RED_GOOP_PURPLE"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
+                    found = self._template_finder.search_and_wait(["RED_GOOP_PURPLE"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
                     if score < .15:
                         stuck_count += 1
                         if stuck_count >=3:
@@ -134,7 +128,7 @@ class Baal:
                     score = (float(np.sum(mask)) / mask.size) * (1/255.0)
                     self._char.move(pos_m, force_tp=True, force_move=True)
                     dinky += 1
-                    found = self._template_finder.search_and_wait(["RED_GOOP_NO_WP", "RED_GOOP_PURPLE"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
+                    found = self._template_finder.search_and_wait(["RED_GOOP_PURPLE"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
                     if score < .15:
                         stuck_count += 1
                         if stuck_count >=3:
@@ -154,16 +148,16 @@ class Baal:
             self._char.pre_buff()
         stuck_count = 0
         keyboard.send("f4")
-        self.wpthreetravel()
+        self.baaltravel()
         ##ending clicker get in
         dinky = 0
         roomfound = False
-        template_match = self._template_finder.search_and_wait(["RED_GOOP_NO_WP", "RED_GOOP_PURPLE"], best_match=True, threshold=0.8, time_out=0.1, use_grayscale=False)
+        template_match = self._template_finder.search_and_wait(["RED_GOOP_PURPLE"], best_match=True, threshold=0.8, time_out=0.1, use_grayscale=False)
         if template_match.valid:
             keyboard.send("tab")
             pos_m = self._screen.convert_screen_to_monitor(template_match.position)
         while not roomfound:
-            roomfound = self._template_finder.search_and_wait(["MEPH_EXIT2", "MEPH_LVL2_WP3E_1", "MEPH_LVL2_WP3E_0", "MEPH_LVL2_WP3E_2"], threshold=0.65, time_out=0.1, take_ss=False, use_grayscale=False).valid
+            roomfound = self._template_finder.search_and_wait(["BAAL_LVL2_4", "BAAL_LVL2_5", "BAAL_LVL2_EXIT"], threshold=0.65, time_out=0.1, take_ss=False, use_grayscale=False).valid
             pos_m = self._screen.convert_screen_to_monitor(template_match.position)
             t0 = self._screen.grab()
             self._char.move(pos_m, force_tp=True, force_move=True)
@@ -188,15 +182,15 @@ class Baal:
                     Logger.debug("STUCK")
                     dinky += 1
                     
-            picked_up_items = False 
-            found_loading_screen_func = lambda: self._ui_manager.wait_for_loading_screen(2.0)
-            if not self._char.select_by_template(["MEPH_LVL2_WP3E_3"], found_loading_screen_func, threshold=0.3, time_out=4):
-                # do a random tele jump and try again
-                if not self._char.select_by_template(["MEPH_LVL2_WP3E_3", "MEPH_LVL2_WP3E_0","MEPH_LVL2_WP3E_2"], found_loading_screen_func, threshold=0.5, time_out=4):
-                    return False
-            # Wait until templates in durance of hate lvl 3 entrance are found
-            if not self._template_finder.search_and_wait(["MEPH_LVL3_1"], threshold=0.8, time_out=20).valid:
+        picked_up_items = False
+        found_loading_screen_func = lambda: self._ui_manager.wait_for_loading_screen(2.0)
+        if not self._char.select_by_template(["BAAL_LVL2_EXIT"], found_loading_screen_func, threshold=0.8, time_out=4):
+            # do a random tele jump and try again
+            if not self._char.select_by_template(["BAAL_LVL2_EXIT"], found_loading_screen_func, threshold=0.8, time_out=4):
                 return False
+        # Wait until templates in durance of hate lvl 3 entrance are found
+        if not self._template_finder.search_and_wait(["BAAL_LVL3_ENTRANCE"], threshold=0.8, time_out=20).valid:
+            return False
 
                     
             picked_up_items = False 

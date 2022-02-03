@@ -211,7 +211,7 @@ if __name__ == "__main__":
     config = Config()
     screen = Screen(config.general["monitor"])
     template_finder = TemplateFinder(screen)
-    search_templates = ["MEPH_LVL2_WP3E_1", "MEPH_LVL2_WP3E_0", "MEPH_EXIT2"]
+    search_templates = ["RED_GOOP_NOWP", "RED_GOOP_PURPLE", "RED_GOOP_WP", "TINY_BABY_WP", "RED_GOOP"]
 
     while 1:
         # img = cv2.imread("")
@@ -219,7 +219,7 @@ if __name__ == "__main__":
         display_img = img.copy()
         start = time.time()
         for key in search_templates:
-            template_match = template_finder.search(key, img, best_match=True, threshold=0.3, use_grayscale=False)
+            template_match = template_finder.search(key, img, best_match=True, threshold=0.8, use_grayscale=False)
             if template_match.valid:
                 cv2.putText(display_img, str(template_match.name), template_match.position, cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
                 cv2.circle(display_img, template_match.position, 7, (255, 0, 0), thickness=5)
