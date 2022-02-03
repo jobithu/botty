@@ -70,7 +70,7 @@ class Meph:
         while not found:    
             found = self._template_finder.search_and_wait(["PURPENT2", "PURPENT3"], threshold=0.85, time_out=0.1, take_ss=False, use_grayscale=False).valid
             while dinky < 75 and not found:
-                pos_m = self._screen.convert_abs_to_monitor((random.uniform(10, 250), random.uniform(-100, -300)))
+                pos_m = self._screen.convert_abs_to_monitor((random.uniform(10, 250), random.uniform(-100, -250)))
                 t0 = self._screen.grab()
                 self._char.move(pos_m, force_tp=True, force_move=True)
                 t1 = self._screen.grab()
@@ -319,6 +319,8 @@ class Meph:
                         score = .5
                         Logger.debug("STUCK")
                         dinky += 1
+            if dinky == 100:
+                return False
 
     def wpfourtravel(self):
         #dostuffto durance 3
@@ -410,7 +412,7 @@ class Meph:
         stuck_count = 0
         keyboard.send("f4")
         templates = ["WPONE1", "WPONE2", "WPONE3", "WPTWO2", "WPTWO2", "WPTWO3", "WPTHREE", "WPFOUR1"] ##checking which way to start exploring
-        template_match = self._template_finder.search_and_wait(["WPTWO2", "WPTWO2", "WPTWO3", "WPTHREE", "WPFOUR1", "MEPH_LVL2_WP1_0", "MEPH_LVL2_WP1_1", "MEPH_LVL2_WP1_2", "MEPH_LVL2_WP1_3", "MEPH_LVL2_WP1_4", "MEPH_LVL2_WP1_5", "MEPH_LVL2_WP1_6", "MEPH_LVL2_WP1_7", "MEPH_LVL2_WP1_8", "MEPH_LVL2_WP1_9", "MEPH_LVL2_WP3_0", "MEPH_LVL2_WP3_1", "MEPH_LVL2_WP3_2", "MEPH_LVL2_WP3_3", "MEPH_LVL2_WP3_4", "MEPH_LVL2_WP3_5"], threshold=0.65, time_out=10)
+        template_match = self._template_finder.search_and_wait(["WPTWO1", "WPTWO2", "WPTHREE", "WPFOUR1", "MEPH_LVL2_WP1_0", "MEPH_LVL2_WP1_1", "MEPH_LVL2_WP1_2", "MEPH_LVL2_WP1_3", "MEPH_LVL2_WP1_4", "MEPH_LVL2_WP1_5", "MEPH_LVL2_WP1_6", "MEPH_LVL2_WP1_7", "MEPH_LVL2_WP1_8", "MEPH_LVL2_WP1_9", "MEPH_LVL2_WP3_0", "MEPH_LVL2_WP3_1", "MEPH_LVL2_WP3_2", "MEPH_LVL2_WP3_3", "MEPH_LVL2_WP3_4", "MEPH_LVL2_WP3_5"], threshold=0.65, time_out=10)
         if not template_match.valid:
                 return False
         layout = template_match.name
@@ -506,7 +508,7 @@ class Meph:
             # Wait until templates in durance of hate lvl 3 entrance are found
             if not self._template_finder.search_and_wait(["MEPH_LVL3_1"], threshold=0.8, time_out=20).valid:
                 return False
-        elif layout == 'WPTWO':
+        elif layout == 'WPTWO1' or layout == 'WPTWO2':
             self.wptwotravel()
         elif layout == 'WPFOUR1':
             self.wpfourtravel()
