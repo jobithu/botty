@@ -6,6 +6,7 @@ from logger import Logger
 from utils.misc import wait, rotate_vec, unit_vector
 import random
 from pather import Location
+from screen import Screen
 import numpy as np
 seal_layout = str
 seal_layout = Logger.info(seal_layout) 
@@ -693,14 +694,26 @@ class BlizzSorc(Sorceress):
         return True
 
     def kill_meph(self) -> bool:
-        self._cast_static()
-        self._blizzard((10, -10), spray=10)
-        template_match = self._template_finder.search_and_wait(["MEPH_MEPH_BOSS"], best_match=True, threshold=0.8, time_out=0.1, use_grayscale=False)
-        pos_m = self._screen.convert_screen_to_monitor(template_match.position)
+        pos_m = self._screen.convert_abs_to_monitor((-450, -350))
+        self.pre_move()
         self.move(pos_m, force_move=True)
+        self._cast_static()
+        pos_m = self._screen.convert_abs_to_monitor((-450, -250))
+        self.pre_move()
+        self.move(pos_m, force_move=True)
+        self._cast_static()
+        self._blizzard((10, -10), spray=45)
+        self._blizzard((10, -10), spray=10)
+        self._blizzard((10, -10), spray=45)
+        self._blizzard((10, -10), spray=10)
+        self._blizzard((10, -10), spray=10)
         self._ice_blast((5, -5), spray=20)
         self._blizzard((0, 0), spray=10)
         self._cast_static()
+        self._blizzard((10, -10), spray=45)
+        self._blizzard((10, -10), spray=10)
+        self._blizzard((10, -10), spray=45)
+        self._blizzard((10, -10), spray=10)
         self._ice_blast((-5, -20), spray=20)
         self._blizzard((10, -10), spray=45)
         self._blizzard((10, -10), spray=10)
@@ -716,6 +729,7 @@ class BlizzSorc(Sorceress):
         self._blizzard((10, 10), spray=10)
         self._ice_blast((-5, -20), spray=45)
         self._blizzard((0, 0), spray=10)
+        Logger.debug("Waiting for merc to kill?!?!?!")
         Logger.debug("he ded")       
         return True
     
