@@ -32,7 +32,7 @@ from char.necro import Necro
 from char.basic import Basic
 from char.basic_ranged import Basic_Ranged
 
-from run import Pindle, ShenkEld, Trav, Nihlatak, Arcane, Diablo, Meph, Baal
+from run import Pindle, ShenkEld, Trav, Nihlatak, Arcane, Diablo, Meph, Baal, Cows
 from town import TownManager, A1, A2, A3, A4, A5
 
 # Added for dclone ip hunt
@@ -99,6 +99,8 @@ class Bot:
             "run_diablo": self._route_config["run_diablo"],
             "run_meph": self._route_config["run_meph"],
             "run_baal": self._route_config["run_baal"],
+            "run_cows": self._route_config["run_cows"],
+
         }
         # Adapt order to the config
         self._do_runs = OrderedDict((k, self._do_runs[k]) for k in self._route_order if k in self._do_runs and self._do_runs[k])
@@ -114,6 +116,7 @@ class Bot:
         self._diablo = Diablo(self._screen, self._template_finder, self._pather, self._town_manager, self._ui_manager, self._char, self._pickit)
         self._meph = Meph(self._screen, self._template_finder, self._pather, self._town_manager, self._ui_manager, self._char, self._pickit)
         self._baal = Baal(self._screen, self._template_finder, self._pather, self._town_manager, self._ui_manager, self._char, self._pickit)
+        self._cows = Cows(self._screen, self._template_finder, self._pather, self._town_manager, self._ui_manager, self._char, self._pickit)
 
         # Create member variables
         self._pick_corpse = pick_corpse
@@ -428,4 +431,14 @@ class Bot:
         self._curr_loc = self._baal.approach(self._curr_loc)
         if self._curr_loc:
             res = self._baal.battle(not self._pre_buffed)
+        self._ending_run_helper(res)
+
+    def on_run_cows(self):
+        res = False
+        self._do_runs["run_cows"] = False
+        self._game_stats.update_location("Cows" if self._config.general['discord_status_condensed'] else "Cow Level")
+        self._curr_loc = self._cows.approach(self._curr_loc)
+        if self._curr_loc:
+            res = self._cows.battle(not self._pre_buffed)
+        self._tps_left -= 1 # we use one tp at pentagram for calibration
         self._ending_run_helper(res)

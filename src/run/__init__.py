@@ -6,3 +6,4 @@ from .arcane import Arcane
 from .diablo import Diablo
 from .meph import Meph
 from .baal import Baal
+from .cows import Cows
