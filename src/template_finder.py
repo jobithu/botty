@@ -211,7 +211,7 @@ if __name__ == "__main__":
     config = Config()
     screen = Screen(config.general["monitor"])
     template_finder = TemplateFinder(screen)
-    search_templates = ["RED_GOOP_NOWP", "RED_GOOP_PURPLE", "RED_GOOP_WP", "TINY_BABY_WP", "RED_GOOP"]
+    search_templates = ["RED_GOOP_PURPLE", "RED_GOOP_PURPLE1", "RED_GOOP_PURPLE2"]
 
     while 1:
         # img = cv2.imread("")
