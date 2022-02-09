@@ -82,60 +82,64 @@ class Baal:
 
     def _scout(self, corner_picker, x1_m, x2_m, y1_m, y2_m, stuck_count, super_stuck, corner_exclude, exclude1, exclude2, keepernumber)-> bool:
         found = False
-        keyboard.send("tab")
-        Logger.debug("SCOUT /// MAP ON")
-        while not found:   
-            found = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4"], best_match=True, threshold=0.9, time_out=0.1, use_grayscale=False).valid
-            founder = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4"], best_match=True, threshold=0.9, time_out=0.1, use_grayscale=False)
-            foundname = founder.name
-            pos_m = self._screen.convert_abs_to_monitor((random.uniform(x1_m, x2_m), random.uniform(y1_m, y2_m)))
-            t0 = self._screen.grab()
-            self._char.move(pos_m, force_tp=True, force_move=True)
-            t1 = self._screen.grab()
-            diff = cv2.absdiff(t0, t1)
-            diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
-            _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
-            score = (float(np.sum(mask)) / mask.size) * (1/255.0)
-            Logger.debug(str(score) + ": is our current score")
-            self._char.move(pos_m, force_tp=True, force_move=True)
-            self._char.move(pos_m, force_tp=True, force_move=True)
-            self._char.move(pos_m, force_tp=True, force_move=True)
-            if score < .05:
-                stuck_count += 1               
-                if stuck_count >=2:
-                    tele_math = random.randint(1, 3)
-                    if math.fmod(tele_math, 3) == 0:
-                        Logger.debug(str(corner_picker) + ": Seems we are stuck, let's go reverse 2 x 3 teleports")
-                        pos_m = self._screen.convert_abs_to_monitor((x2_m * -1, y2_m * -1))
-                        self._char.move(pos_m, force_tp=True)
-                        self._char.move(pos_m, force_tp=True)
-                        self._char.move(pos_m, force_tp=True)
-                        pos_m = self._screen.convert_abs_to_monitor((x2_m * -1, y2_m))
-                        self._char.move(pos_m, force_tp=True)
-                        self._char.move(pos_m, force_tp=True)
-                        self._char.move(pos_m, force_tp=True)
-                        stuck_count = 0
-                        super_stuck +=1
-                    else:
-                        Logger.debug(str(corner_picker) + ": Seems we are stuck, let's go reverse 2 x 3 teleports")
-                        pos_m = self._screen.convert_abs_to_monitor((x2_m * -1, y2_m * -1))
-                        self._char.move(pos_m, force_tp=True)
-                        self._char.move(pos_m, force_tp=True)
-                        self._char.move(pos_m, force_tp=True)
-                        pos_m = self._screen.convert_abs_to_monitor((x2_m * -1, y2_m * -1))
-                        self._char.move(pos_m, force_tp=True)
-                        self._char.move(pos_m, force_tp=True)
-                        self._char.move(pos_m, force_tp=True)
-                        stuck_count = 0
-                        super_stuck +=1    
-                    if super_stuck >= 2:
-                        self._corner_roller(corner_picker, x1_m, x2_m, y1_m, y2_m, stuck_count, super_stuck, corner_exclude, exclude1, exclude2, keepernumber)
-            if found == True:
-                keyboard.send("tab")
-                Logger.debug("SCOUT EXITING /// MAP OFF")
-                Logger.debug(foundname)
-                Logger.debug(founder.score)
-                self._exitclicker(pos_m)
+        Logger.debug("SCOUTING START")
+        if not self._template_finder.search_and_wait(["MAP_CHECK"], best_match=True, threshold=0.5, time_out=0.1, use_grayscale=False).valid:
+            keyboard.send("tab")
+            Logger.debug("SCOUT /// MAP ON")
+        while not found:
+                found = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "RED_GOOP_PURPLE6"], best_match=True, threshold=0.9, time_out=0.1, use_grayscale=False).valid
+                founder = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "RED_GOOP_PURPLE6"], best_match=True, threshold=0.9, time_out=0.1, use_grayscale=False)
+                foundname = founder.name
+                if founder.valid:
+                    pos_m = self._screen.convert_screen_to_monitor(founder.position)
+                # Logger.debug("EXIT CLICKER 1st FIND/// MAP OFF")
+                pos_m = self._screen.convert_abs_to_monitor((random.uniform(x1_m, x2_m), random.uniform(y1_m, y2_m)))
+                t0 = self._screen.grab()
+                self._char.move(pos_m, force_tp=True, force_move=True)
+                t1 = self._screen.grab()
+                diff = cv2.absdiff(t0, t1)
+                diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+                _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
+                score = (float(np.sum(mask)) / mask.size) * (1/255.0)
+                Logger.debug(str(score) + ": is our current score")
+                self._char.move(pos_m, force_tp=True, force_move=True)
+                self._char.move(pos_m, force_tp=True, force_move=True)
+                self._char.move(pos_m, force_tp=True, force_move=True)
+                if score < .10:
+                    stuck_count += 1               
+                    if stuck_count >=2:
+                        tele_math = random.randint(1, 3)
+                        if math.fmod(tele_math, 3) == 0:
+                            Logger.debug(str(corner_picker) + ": Seems we are stuck, let's go reverse 2 x 3 teleports SCOUT 1")
+                            pos_m = self._screen.convert_abs_to_monitor((x2_m * -1, y2_m * -1))
+                            self._char.move(pos_m, force_tp=True)
+                            self._char.move(pos_m, force_tp=True)
+                            self._char.move(pos_m, force_tp=True)
+                            pos_m = self._screen.convert_abs_to_monitor((x2_m * -1, y2_m))
+                            self._char.move(pos_m, force_tp=True)
+                            self._char.move(pos_m, force_tp=True)
+                            self._char.move(pos_m, force_tp=True)
+                            stuck_count = 0
+                            super_stuck +=1
+                        else:
+                            Logger.debug(str(corner_picker) + ": Seems we are stuck, let's go reverse 2 x 3 teleports SCOUT 2")
+                            pos_m = self._screen.convert_abs_to_monitor((x2_m * -1, y2_m * -1))
+                            self._char.move(pos_m, force_tp=True)
+                            self._char.move(pos_m, force_tp=True)
+                            self._char.move(pos_m, force_tp=True)
+                            pos_m = self._screen.convert_abs_to_monitor((x2_m, y2_m * -1))
+                            self._char.move(pos_m, force_tp=True)
+                            self._char.move(pos_m, force_tp=True)
+                            self._char.move(pos_m, force_tp=True)
+                            stuck_count = 0
+                            super_stuck +=1    
+                        if super_stuck >= 2:
+                            self._corner_roller(corner_picker, x1_m, x2_m, y1_m, y2_m, stuck_count, super_stuck, corner_exclude, exclude1, exclude2, keepernumber)
+        if found == True:
+            Logger.debug("SCOUT EXITING oustside")
+            Logger.debug(foundname)
+            Logger.debug(founder.score)
+            self._exitclicker(pos_m)
 
             
     # def _to_throne(self)-> bool:
@@ -157,7 +161,7 @@ class Baal:
     #     #lets start the search
     #     while not found:
     #         Logger.debug(str(corner_picker) + ": is our selected corner.")   
-    #         found = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "BAAL_LVL2_4", "BAAL_LVL2_5", "BAAL_LVL2_EXIT"], best_match=True, threshold=0.7, time_out=0.1, use_grayscale=False).valid
+    #         found = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "RED_GOOP_PURPLE6", "BAAL_LVL2_4", "BAAL_LVL2_5", "BAAL_LVL2_EXIT", "BAALER2_0", "BAALER2_1"], best_match=True, threshold=0.7, time_out=0.1, use_grayscale=False).valid
     #         if corner_picker == 1:
     #             self._scout(1, -250, -600, -200, -345, stuck_count, super_stuck, corner_exclude, exclude1, exclude2, keepernumber) #top - left
     #             dinky += 1
@@ -176,13 +180,19 @@ class Baal:
             Logger.debug("EXITCLICKER")
             roomfound = False
             stuck_count = 0
-            template_match = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4"], best_match=True, threshold=0.9,  time_out=0.1, use_grayscale=False)
-            if template_match.valid:
+            super_stuck = 0
+            mapcheck = self._template_finder.search_and_wait(["MAP_CHECK"], best_match=True, threshold=0.5, time_out=0.1, use_grayscale=False).valid
+            template_match = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "RED_GOOP_PURPLE6"], best_match=True, threshold=0.9,  time_out=0.1, use_grayscale=False)
+            if template_match.valid and mapcheck.valid:
                 pos_m = self._screen.convert_screen_to_monitor(template_match.position)
-                # keyboard.send("tab")
+                Logger.debug("EXITCLICKER FOUND TEMPLATE TURNING MAP OFF!")
+                keyboard.send("tab")
                 # Logger.debug("EXIT CLICKER 1st FIND/// MAP OFF")
             while not roomfound:
-                roomfound = self._template_finder.search_and_wait(["BAAL_LVL2_4", "BAAL_LVL2_5", "BAAL_LVL2_EXIT"], best_match=True, threshold=0.7,  time_out=0.1, use_grayscale=False)
+                roomfound = self._template_finder.search_and_wait(["BAAL_LVL2_4", "BAAL_LVL2_5", "BAAL_LVL2_EXIT", "BAALER2_0", "BAALER2_1"], best_match=True, threshold=0.7,  time_out=0.1, use_grayscale=False).valid
+                template_match = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "RED_GOOP_PURPLE6"], best_match=True, threshold=0.9,  time_out=0.1, use_grayscale=False)
+                if roomfound == True:
+                    Logger.debug("EXIT CLICKER EXIT INSIDE")
                 t0 = self._screen.grab()
                 self._char.move(pos_m, force_tp=True, force_move=True)
                 t1 = self._screen.grab()
@@ -197,94 +207,143 @@ class Baal:
                 self._char.move(pos_m, force_tp=True, force_move=True)              
                 if score < .15:
                     stuck_count += 1
-                    if stuck_count >= 3:
-                        Logger.debug("EXIT CLICKER STUCK")
-                        keyboard.send("tab")
-                        Logger.debug("EXIT CLICKER STUCK /// MAP ON????")
+                    if stuck_count >= 2 and super_stuck < 2:
+                        super_stuck += 1
+                        Logger.debug("EXIT CLICKER STUCK")  
+                        # t0 = self._screen.grab()                      
+                        # pos_m = self._screen.convert_abs_to_monitor((-315, -100))
+                        # self._char.move(pos_m, force_move=True)
+                        # pos_m = self._screen.convert_abs_to_monitor((-315, 150))
+                        # self._char.move(pos_m, force_move=True)
+                        # t1 = self._screen.grab()
+                        # # check difference between the two frames to determine if tele was good or not
+                        # diff = cv2.absdiff(t0, t1)
+                        # diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+                        # _, mask = cv2.threshold(diff, 13, 255, cv2.THRESH_BINARY)
+                        # score = (float(np.sum(mask)) / mask.size) * (1/255.0)
+                        # if score < .15:
+                        #     pos_m = self._screen.convert_abs_to_monitor((-300, 200))
+                        #     self._char.move(pos_m, force_move=True)
+                        #     pos_m = self._screen.convert_abs_to_monitor((300, -250))
+                        #     self._char.move(pos_m, force_move=True)
+                        # stuck_count = 0
+                        ##################MAYBE GOOD TELE LENGTHENER
                         x, y = pos_m
+                        pos_m2 = x, y
+                        coordlog = x, y
+                        Logger.debug(coordlog)
+                        x, y = self._screen.convert_monitor_to_screen(pos_m2)
+                        pos_m2 = x, y
+                        x, y = self._screen.convert_screen_to_abs(pos_m2)
+                        x, y = x * -1, y *-1
+                        pos_m2 = x, y
+                        coordlog = x, y
+                        Logger.debug(coordlog)
+                        # x, y = self._screen.convert_abs_to_monitor((pos_m2))
+                        #########################
                         if x < 0 and y < 0: # -, - Corner 1 Top Left
-                            keyboard.send("corner one stuck")
+                            Logger.debug("corner one stuck")
                             pos_m2 = self._screen.convert_abs_to_monitor((-600, -350))
                             self._char.move(pos_m2, force_tp=True)
                             super_stuck += 1
                             stuck_count = 0
                         if x > 0 and y < 0: #corner 2
-                            keyboard.send("corner two stuck")
+                            Logger.debug("corner two stuck")
                             pos_m2 = self._screen.convert_abs_to_monitor((600, -350))
                             self._char.move(pos_m2, force_tp=True)
                             super_stuck += 1
                             stuck_count = 0
                         if x > 0 and y > 0: #corner 3
-                            keyboard.send("corner three stuck")
+                            Logger.debug("corner three stuck")
                             pos_m2 = self._screen.convert_abs_to_monitor((600, 350))
                             self._char.move(pos_m2, force_tp=True)
                             super_stuck += 1
                             stuck_count = 0
                         if x < 0 and y > 0: #corner 4
-                            keyboard.send("corner four stuck")
+                            Logger.debug("corner four stuck")
                             pos_m2 = self._screen.convert_abs_to_monitor((-600, 350))
                             self._char.move(pos_m2, force_tp=True)
                             super_stuck += 1
                             stuck_count = 0
-                        if super_stuck == 5:
+                    if super_stuck == 2:
+                        Logger.debug("SUPER DUPER STUCK")
+                        if not self._template_finder.search_and_wait(["MAP_CHECK"], best_match=True, threshold=0.5, time_out=0.1, use_grayscale=False).valid:
+                            Logger.debug("MAP CHECKER /// MAP ON")
                             keyboard.send("tab")
-                            template_match = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4"], best_match=True, threshold=0.9,  time_out=0.5, use_grayscale=False).valid
-                            if template_match == True:
-                                pos_m = self._screen.convert_screen_to_monitor(template_match.position) 
-                            pos_m = self._screen.convert_abs_to_monitor((355, -150))
-                            self._char.move(pos_m, force_tp=True)
-                            self._char.move(pos_m, force_tp=True)
-                            pos_m = self._screen.convert_abs_to_monitor((485, 200))
-                            self._char.move(pos_m, force_tp=True)
-                            super_stuck = 0                              
-                            if template_match == True:
-                                keyboard.send("tab")
-                                Logger.debug("EXIT CLICKER MATCH /// MAP OFF")
-                                stuck_count = 0
-                            elif template_match == False:
-                                Logger.debug("NO MATCH NO POSITION2222222")                                      
-                                keyboard.send("tab")
-                                Logger.debug("EXIT CLICKER MATCH /// MAP ON????")
-                                stuck_count = 0
-                if roomfound == True:
-                    Logger.debug("FOUND EXIT")
-                    pos_m = self._screen.convert_screen_to_monitor(roomfound.position)
-                elif roomfound == False:
-                    pos_m = pos_m
-                found_loading_screen_func = lambda: self._ui_manager.wait_for_loading_screen(2.0)
-                if not self._char.select_by_template(["BAAL_LVL2_EXIT"], found_loading_screen_func, threshold=0.7, time_out=4):
-                    # do a random tele jump and try again
-                    Logger.debug("FOUND EXIT BUT BROKE")
-                    pos_m = self._screen.convert_abs_to_monitor((355, -150))
+                        template_match = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "RED_GOOP_PURPLE6"], best_match=True, threshold=0.9,  time_out=0.5, use_grayscale=False).valid
+                        if template_match.valid and mapcheck.valid:
+                            template_match = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "RED_GOOP_PURPLE6"], best_match=True, threshold=0.9,  time_out=0.5, use_grayscale=False)
+                            pos_m = self._screen.convert_screen_to_monitor(template_match.position)
+                            keyboard.send("tab")
+                            Logger.debug("EXIT CLICKER MATCH AND MAP MATCH /// MAP OFF")
+                            stuck_count = 0
+                            super_stuck = 0
+                        elif template_match == False:
+                            Logger.debug("NO MATCH NO POSITION2222222")                                      
+                            stuck_count = 0
+                            super_stuck = 0
+            Logger.debug("FOUND EXIT")
+            found_loading_screen_func = lambda: self._ui_manager.wait_for_loading_screen(2.0)
+            if not self._char.select_by_template(["BAAL_LVL2_EXIT", "BAALER2_0", "BAALER2_1"], found_loading_screen_func, threshold=0.7, time_out=4):
+                # do a random tele jump and try again
+                Logger.debug("FOUND EXIT BUT BROKE")
+                pos_m = self._screen.convert_abs_to_monitor((315, -150))
+                self._char.move(pos_m, force_move=True)
+                if not self._char.select_by_template(["BAAL_LVL2_EXIT", "BAALER2_0", "BAALER2_1"], found_loading_screen_func, threshold=0.7, time_out=4):
                     self._char.move(pos_m, force_move=True)
-                    if not self._char.select_by_template(["BAAL_LVL2_EXIT"], found_loading_screen_func, threshold=0.7, time_out=4):
+                    if not self._char.select_by_template(["BAAL_LVL2_EXIT", "BAALER2_0", "BAALER2_1"], found_loading_screen_func, threshold=0.7, time_out=4):
+                        pos_m = self._screen.convert_abs_to_monitor((-315, -100))
                         self._char.move(pos_m, force_move=True)
-                        if not self._char.select_by_template(["BAAL_LVL2_EXIT"], found_loading_screen_func, threshold=0.7, time_out=4):
-                            self._char.move(pos_m, force_move=True)
-                            Logger.debug("CANT GET TO EXIT")
-                            if not self._char.select_by_template(["BAAL_LVL2_EXIT"], found_loading_screen_func, threshold=0.7, time_out=4):
-                                Logger.debug("ABANDON HOPE!!!")
-                                return False
-                if self._template_finder.search_and_wait(["BAAL_THRONE_START_0", "BAAL_THRONE_START_1", "BAAL_THRONE_START_2", "BAAL_THRONE_START_3"], threshold=0.7, time_out=20).valid:
-                    #throne killd
-                    self._throne_room()
-                    Logger.debug("GOTTA DO THRONE")
-                elif not self._template_finder.search_and_wait(["BAAL_THRONE_START_0", "BAAL_THRONE_START_1", "BAAL_THRONE_START_2", "BAAL_THRONE_START_3"], threshold=0.7, time_out=20).valid:
-                    self._scout(2, 250, 600, -200, -345, stuck_count, 0, 4, 2, 2, 0) # top - right
-
-
+                        Logger.debug("CANT GET TO EXIT")
+                        if not self._char.select_by_template(["BAAL_LVL2_EXIT", "BAALER2_0", "BAALER2_1"], found_loading_screen_func, threshold=0.7, time_out=4):
+                            Logger.debug("ABANDON HOPE!!!")
+                            return False
+            if not self._template_finder.search_and_wait(["BAAL_THRONE_START_0", "BAAL_THRONE_START_1", "BAAL_THRONE_START_2", "BAAL_THRONE_START_3"], threshold=0.7, time_out=1).valid:
+                self._scout(4, -250, -600, 200, 345, stuck_count, super_stuck, 4, 2, 2, 4) # bottom - left
+            else:
+                #throne killd
+                keyboard.send("tab")
+                self._throne_room()
 
     def _throne_room(self)-> bool:
         Logger.debug("TO MONSTERIN THRONE")
-        pos_m = self._screen.convert_abs_to_monitor((500, -300))
-        self._char.move(pos_m, force_tp=True)
-        self._char.move(pos_m, force_tp=True)
-        self._char.move(pos_m, force_tp=True)
-        self._char.move(pos_m, force_tp=True)
-        self._char.move(pos_m, force_tp=True)
+        if not self._template_finder.search_and_wait(["MAP_CHECK"], best_match=True, threshold=0.5, time_out=0.1, use_grayscale=False).valid:
+            Logger.debug("MAP IS OFF! DO THRONE!")
+        else:
+            Logger.debug("MAP IS ON TURNING OFF! DO THRONE!")
+            keyboard.send("tab")
+        roomfound = False
+        while not roomfound:
+            roomfound = self._template_finder.search_and_wait(["BAAL_THRONE_ROOM_0", "BAAL_THRONE_ROOM_7", "BAAL_THRONE_ROOM_2", "BAAL_THRONE_ROOM_3", "BAAL_THRONE_ROOM_4", "BAAL_THRONE_ROOM_5", "BAAL_THRONE_ROOM_6"], best_match=True, threshold=0.8,  time_out=0.1, use_grayscale=False).valid
+            pos_m = self._screen.convert_abs_to_monitor((550, -340))
+            self._char.move(pos_m, force_tp=True)
+            self._char.move(pos_m, force_tp=True)
+            self._char.move(pos_m, force_tp=True)
+        if not self._pather.traverse_nodes([9000], self._char, time_out=3):
+            # do a random tele jump and try again
+            pos_m = self._screen.convert_abs_to_monitor((250, 220))
+            self._char.move(pos_m, force_move=True)
+        Logger.debug("KILLING TRASH TWO TIMES!!!")     
         self._char._kill_throne_trash()
-        Logger.debug("AT MONSTER SPAWN!>!>!")
-        wait(10)
+        self._char._kill_throne_trash()
+        Logger.debug("WAITING FOR LAUGH?")
+        baaldude = True
+        while baaldude:
+            baaldude = self._template_finder.search_and_wait(["BAAL_HIMSELF"], best_match=True, threshold=0.6, time_out=0.1, use_grayscale=False).valid or self._template_finder.search_and_wait(["BAAL_HIMSELF"], best_match=True, threshold=0.9, time_out=0.1, use_grayscale=False).valid
+            if self._template_finder.search_and_wait(["LAUGHING"], best_match=True, threshold=0.75, time_out=0.1, use_grayscale=False).valid:
+                self._char._kill_throne_trash() 
+            else:
+                 Logger.debug("Uh.. WAITING FOR LAUGH")                   
+        keyboard.send("f4")
+        found_loading_screen_func = lambda: self._ui_manager.wait_for_loading_screen(2.0)
+        if not self._char.select_by_template(["BAAL_THRONE_ROOM_7"], found_loading_screen_func, threshold=0.7, time_out=4):
+            pos_m = self._screen.convert_abs_to_monitor((250, -200))
+            self._char.move(pos_m, force_move=True)
+            Logger.debug("CANT GET TO EXIT")
+            if not self._char.select_by_template(["BAAL_THRONE_ROOM_7"], found_loading_screen_func, threshold=0.7, time_out=4):
+                Logger.debug("ABANDON HOPE!!!")
+                return False
+
                     
     
     def battle(self, do_pre_buff: bool) -> Union[bool, tuple[Location, bool]]:
@@ -293,10 +352,13 @@ class Baal:
             self._char.pre_buff()
         stuck_count = 0
         keyboard.send("f4")
-        Logger.debug("IN BATTLE - SCOUT")
         self._scout(4, -485, -600, 200, 345, stuck_count, 0, 4, 2, 2, 0) #tries to get to exit
-        #self._throne_room() #heads to the monster spawn
-        #self._char.kill_baal()            
+        Logger.debug("KILLING BAAL????")
+        pos_m = self._screen.convert_abs_to_monitor((-550, -330))
+        self._char.move(pos_m, force_move=True)
+        pos_m = self._screen.convert_abs_to_monitor((-250, 150))
+        self._char.move(pos_m, force_move=True)
+        self._char.kill_baal()            
 
      
 
