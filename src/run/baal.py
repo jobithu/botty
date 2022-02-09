@@ -181,7 +181,7 @@ class Baal:
             roomfound = False
             stuck_count = 0
             super_stuck = 0
-            mapcheck = self._template_finder.search_and_wait(["MAP_CHECK"], best_match=True, threshold=0.5, time_out=0.1, use_grayscale=False).valid
+            mapcheck = self._template_finder.search_and_wait(["MAP_CHECK"], best_match=True, threshold=0.5, time_out=0.1, use_grayscale=False)
             template_match = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "RED_GOOP_PURPLE6"], best_match=True, threshold=0.9,  time_out=0.1, use_grayscale=False)
             if template_match.valid and mapcheck.valid:
                 pos_m = self._screen.convert_screen_to_monitor(template_match.position)
@@ -233,9 +233,9 @@ class Baal:
                         coordlog = x, y
                         Logger.debug(coordlog)
                         x, y = self._screen.convert_monitor_to_screen(pos_m2)
-                        pos_m2 = x, y
-                        x, y = self._screen.convert_screen_to_abs(pos_m2)
                         x, y = x * -1, y *-1
+                        pos_m2 = x, y
+                        x, y = self._screen.convert_screen_to_abs(pos_m2)                        
                         pos_m2 = x, y
                         coordlog = x, y
                         Logger.debug(coordlog)
@@ -270,7 +270,7 @@ class Baal:
                         if not self._template_finder.search_and_wait(["MAP_CHECK"], best_match=True, threshold=0.5, time_out=0.1, use_grayscale=False).valid:
                             Logger.debug("MAP CHECKER /// MAP ON")
                             keyboard.send("tab")
-                        template_match = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "RED_GOOP_PURPLE6"], best_match=True, threshold=0.9,  time_out=0.5, use_grayscale=False).valid
+                        template_match = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "RED_GOOP_PURPLE6"], best_match=True, threshold=0.9,  time_out=0.5, use_grayscale=False)
                         if template_match.valid and mapcheck.valid:
                             template_match = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "RED_GOOP_PURPLE6"], best_match=True, threshold=0.9,  time_out=0.5, use_grayscale=False)
                             pos_m = self._screen.convert_screen_to_monitor(template_match.position)
@@ -325,15 +325,46 @@ class Baal:
             self._char.move(pos_m, force_move=True)
         Logger.debug("KILLING TRASH TWO TIMES!!!")     
         self._char._kill_throne_trash()
+        pos_m = self._screen.convert_abs_to_monitor((-250, 150))
+        self._char.move(pos_m, force_move=True)
         self._char._kill_throne_trash()
+        if not self._pather.traverse_nodes([9000], self._char, time_out=3):
+            # do a random tele jump and try again
+            pos_m = self._screen.convert_abs_to_monitor((250, 220))
+            self._char.move(pos_m, force_move=True)
         Logger.debug("WAITING FOR LAUGH?")
         baaldude = True
-        while baaldude:
-            baaldude = self._template_finder.search_and_wait(["BAAL_HIMSELF"], best_match=True, threshold=0.6, time_out=0.1, use_grayscale=False).valid or self._template_finder.search_and_wait(["BAAL_HIMSELF"], best_match=True, threshold=0.9, time_out=0.1, use_grayscale=False).valid
+        found_loading_screen_func = lambda: self._ui_manager.wait_for_loading_screen(2.0)
+        laughcount = 0
+        while laughcount < 7:
             if self._template_finder.search_and_wait(["LAUGHING"], best_match=True, threshold=0.75, time_out=0.1, use_grayscale=False).valid:
-                self._char._kill_throne_trash() 
-            else:
-                 Logger.debug("Uh.. WAITING FOR LAUGH")                   
+                laughcount += 1
+                if not self._pather.traverse_nodes([9000], self._char, time_out=3):
+                    # do a random tele jump and try again
+                    pos_m = self._screen.convert_abs_to_monitor((250, 220))
+                    self._char.move(pos_m, force_move=True)
+                self._char._kill_throne_trash()
+            if laughcount >= 5:
+                if not self._pather.traverse_nodes([9000], self._char, time_out=3):
+                    # do a random tele jump and try again
+                    pos_m = self._screen.convert_abs_to_monitor((250, 220))
+                    self._char.move(pos_m, force_move=True)
+                    found_loading_screen_func = lambda: self._ui_manager.wait_for_loading_screen(2.0)
+                    if not self._char.select_by_template(["BAAL_THRONE_ROOM_7"], found_loading_screen_func, threshold=0.7, time_out=4):
+                        pos_m = self._screen.convert_abs_to_monitor((250, -200))
+                        self._char.move(pos_m, force_move=True)
+                        Logger.debug("MAYBE MORE SPAWNS!!")
+                        if not self._char.select_by_template(["BAAL_THRONE_ROOM_7"], found_loading_screen_func, threshold=0.7, time_out=4):
+                            Logger.debug("KILL SOME MORE TRASH!")
+                            pass                            
+
+        #         self._char._kill_throne_trash()
+        # while baaldude:
+        #     baaldude = self._template_finder.search_and_wait(["BAAL_HIMSELF"], best_match=True, threshold=0.6, time_out=0.1, use_grayscale=False).valid or self._template_finder.search_and_wait(["BAAL_HIMSELF"], best_match=True, threshold=0.9, time_out=0.1, use_grayscale=False).valid
+        #     if self._template_finder.search_and_wait(["LAUGHING"], best_match=True, threshold=0.75, time_out=0.1, use_grayscale=False).valid:
+        #         self._char._kill_throne_trash() 
+        #     else:
+        #          Logger.debug("Uh.. WAITING FOR LAUGH")                   
         keyboard.send("f4")
         found_loading_screen_func = lambda: self._ui_manager.wait_for_loading_screen(2.0)
         if not self._char.select_by_template(["BAAL_THRONE_ROOM_7"], found_loading_screen_func, threshold=0.7, time_out=4):
