@@ -397,8 +397,12 @@ class Baal:
             Logger.debug("MAP IS OFF! DO THRONE!")
         else:
             Logger.debug("MAP IS ON TURNING OFF! DO THRONE!")
-            keyboard.send(self._char._skill_hotkeys["teleport"]) #switch active skill to teleport
             keyboard.send(self._config.char["minimap"]) #turn on minimap
+        
+        # Cthu: instead of looping to the throne, we just use a static path that ends close to [9000]. The coordinates for the static path are defined in GAME.INI & are called with the function below. You can record your own static paths using utils/static_run_recorder.py -> press F11 and right click where you want to record the x,y of the click to the terminal.
+        if not self._pather.traverse_nodes_fixed("baal_lvl3entrance_throne", self._char): return False #we wrap it around an if block returning false, when it was not successful, to stop the run. 
+        if not self._pather.traverse_nodes([9000], self._char, time_out=3, threshold=0.8): return False
+        """
         roomfound = False
         while not roomfound:
             roomfound = self._template_finder.search_and_wait(["BAAL_THRONE_ROOM_0", "BAAL_THRONE_ROOM_7", "BAAL_THRONE_ROOM_2", "BAAL_THRONE_ROOM_3", "BAAL_THRONE_ROOM_4", "BAAL_THRONE_ROOM_5", "BAAL_THRONE_ROOM_6"], best_match=True, threshold=0.8,  time_out=0.1, use_grayscale=False).valid
@@ -410,6 +414,7 @@ class Baal:
             # do a random tele jump and try again
             pos_m = self._screen.convert_abs_to_monitor((250, 220))
             self._char.move(pos_m, force_move=True)
+        """  
         Logger.debug("MINI TRASH")
         corner_count = 0
         while not self._template_finder.search_and_wait(["LAUGHING"], best_match=True, threshold=0.75, time_out=0.1, use_grayscale=False).valid:
