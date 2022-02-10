@@ -132,6 +132,7 @@ class Config:
             "type": Config._select_val("char", "type"),
             "show_items": Config._select_val("char", "show_items"),
             "inventory_screen": Config._select_val("char", "inventory_screen"),
+            "minimap": Config._select_val("char", "minimap"),
             "stand_still": Config._select_val("char", "stand_still"),
             "force_move": Config._select_val("char", "force_move"),
             "num_loot_columns": int(Config._select_val("char", "num_loot_columns")),
