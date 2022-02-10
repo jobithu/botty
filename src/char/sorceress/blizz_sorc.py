@@ -733,71 +733,29 @@ class BlizzSorc(Sorceress):
         Logger.debug("he ded")       
         return True
 
-    def kill_throne_trash(self, nodes1: list[int], nodes2: list[int]) -> bool:
-        #bait teledance
-        self._blizzard((40, 40), spray=10)
-        self._ice_blast((35, 35), spray=90)
-        self._blizzard((140, 140), spray=10)
-        self._ice_blast((35, 35), spray=90)
-        #move down
-        pos_m = self._screen.convert_abs_to_monitor((-10, -85))
-        self.pre_move()
-        self.move(pos_m, force_move=True)
-        self._blizzard((40, 40), spray=10)
-        self._ice_blast((35, 35), spray=90)
-        self._blizzard((140, 140), spray=10)
-        self._ice_blast((35, 35), spray=90)
-        #move down
-        self._blizzard((0, 0), spray=10)
-        self._ice_blast((35, 35), spray=90)
-        self._blizzard((140, 140), spray=10)
-        self._ice_blast((35, 35), spray=90)
-        self._ice_blast((35, 35), spray=180)
-        self._blizzard((0, 0), spray=10)
-        self._ice_blast((35, 35), spray=90)
-        self._blizzard((40, 40), spray=90)
-        self._ice_blast((35, 35), spray=90)
-        pos_m = self._screen.convert_abs_to_monitor((10, 85))
-        self.pre_move()
-        self.move(pos_m, force_move=True)
-        self._pather.traverse_nodes(nodes2, self)
-        self._blizzard((0, 0), spray=10)
-        self._ice_blast((-35, -35), spray=90)
-        self._blizzard((-40, -40), spray=10)
-        self._ice_blast((-35, -35), spray=90)
-        self._cast_static()
-        return True
-
     def kill_baal(self) -> bool:
-        #bait teledance
-        self._blizzard((40, 40), spray=10)
-        self._ice_blast((35, 35), spray=90)
-        self._blizzard((140, 140), spray=10)
-        self._ice_blast((35, 35), spray=90)
-        #move down
-        pos_m = self._screen.convert_abs_to_monitor((-10, -85))
-        self.pre_move()
-        self.move(pos_m, force_move=True)
-        self._blizzard((40, 40), spray=10)
-        self._ice_blast((35, 35), spray=90)
-        self._blizzard((140, 140), spray=10)
-        self._ice_blast((35, 35), spray=90)
-        #move down
+        self._cast_static()
         self._blizzard((0, 0), spray=10)
         self._ice_blast((35, 35), spray=90)
+        self._cast_static()
+        self._blizzard((0, 0), spray=10)
+        self._ice_blast((35, 35), spray=90)
+        self._blizzard((40, 40), spray=10)
+        self._ice_blast((35, 35), spray=90)
         self._blizzard((140, 140), spray=10)
+        self._ice_blast((35, 35), spray=90)
+        self._blizzard((0, 0), spray=10)
+        self._ice_blast((35, 35), spray=90)
+        self._blizzard((0, 0), spray=10)
         self._ice_blast((35, 35), spray=90)
         self._ice_blast((35, 35), spray=180)
         self._blizzard((0, 0), spray=10)
         self._ice_blast((35, 35), spray=90)
         self._blizzard((40, 40), spray=90)
         self._ice_blast((35, 35), spray=90)
-        pos_m = self._screen.convert_abs_to_monitor((10, 85))
-        self.pre_move()
-        self.move(pos_m, force_move=True)
         self._blizzard((0, 0), spray=10)
         self._ice_blast((-35, -35), spray=90)
-        self._blizzard((-40, -40), spray=10)
+        self._blizzard((0, 0), spray=10)
         self._ice_blast((-35, -35), spray=90)
         self._cast_static()
         return True
@@ -824,6 +782,13 @@ class BlizzSorc(Sorceress):
         self._ice_blast((-35, -35), spray=90)
         self._cast_static()
         return True
+
+    def _mini_trash(self) -> bool:
+        self._cast_static()
+        self._blizzard((0, 0), spray=10)
+        self._ice_blast((-35, 35), spray=90)
+        return True
+
 
     
 if __name__ == "__main__":
