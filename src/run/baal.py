@@ -142,7 +142,7 @@ class Baal:
             template_match = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "RED_GOOP_PURPLE6"], best_match=True, threshold=0.9,  time_out=0.5, use_grayscale=False)
             pos_m = self._screen.convert_screen_to_monitor(template_match.position)
             if self._template_finder.search_and_wait(["MAP_CHECK"], best_match=True, threshold=0.7, time_out=0.1, use_grayscale=False).valid:
-                keyboard.send(self._skill_hotkeys["teleport"])
+                keyboard.send(self._char._skill_hotkeys["teleport"])
                 keyboard.send(self._config.char["minimap"])
                 Logger.debug("EXIT CLICKER MATCH AND MAP MATCH /// MAP OFF")
             stuck_count = 0
@@ -254,7 +254,7 @@ class Baal:
         found = False
         Logger.debug("SCOUTING START")
         if not self._template_finder.search_and_wait(["MAP_CHECK"], best_match=True, threshold=0.5, time_out=0.1, use_grayscale=False).valid:
-            keyboard.send(self._skill_hotkeys["teleport"]) #switch active skill to teleport
+            keyboard.send(self._char._skill_hotkeys["teleport"]) #switch active skill to teleport
             keyboard.send(self._config.char["minimap"]) #turn on minimap
             Logger.debug("SCOUT /// MAP ON")
         while not found:
@@ -291,7 +291,7 @@ class Baal:
     #     Logger.debug("TO THRONE")
     #     #do_pre_buff: bool
     #     # if do_pre_buff: self._char.pre_buff()   
-          # keyboard.send(self._skill_hotkeys["teleport"]) #switch active skill to teleport
+          # keyboard.send(self._char._skill_hotkeys["teleport"]) #switch active skill to teleport
           # keyboard.send(self._config.char["minimap"]) #turn on minimap
     #     #setting up variables
     #     found = False
@@ -332,7 +332,7 @@ class Baal:
                 pos_m = self._screen.convert_screen_to_monitor(template_match.position)
                 if self._template_finder.search_and_wait(["MAP_CHECK"], best_match=True, threshold=0.5, time_out=0.1, use_grayscale=False).valid:
                     Logger.debug("EXITCLICKER FOUND TEMPLATE TURNING MAP OFF!")
-                    keyboard.send(self._skill_hotkeys["teleport"]) #switch active skill to teleport
+                    keyboard.send(self._char._skill_hotkeys["teleport"]) #switch active skill to teleport
                     keyboard.send(self._config.char["minimap"]) #turn on minimap
                     # Logger.debug("EXIT CLICKER 1st FIND/// MAP OFF")
             while not roomfound:
@@ -340,7 +340,7 @@ class Baal:
                 template_match = self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "RED_GOOP_PURPLE6"], best_match=True, threshold=0.9,  time_out=0.1, use_grayscale=False)
                 if roomfound == True or template_match == True:
                     if self._template_finder.search_and_wait(["MAP_CHECK"], best_match=True, threshold=0.5, time_out=0.1, use_grayscale=False).valid:
-                        keyboard.send(self._skill_hotkeys["teleport"]) #switch active skill to teleport
+                        keyboard.send(self._char._skill_hotkeys["teleport"]) #switch active skill to teleport
                         keyboard.send(self._config.char["minimap"]) #turn on minimap
                         Logger.debug("EXIT CLICKER MATCH AND MAP MATCH /// MAP OFF")
                         if self._template_finder.search_and_wait(["RED_GOOP_PURPLE3", "RED_GOOP_PURPLE4", "RED_GOOP_PURPLE6"], best_match=True, threshold=0.9,  time_out=0.1, use_grayscale=False) == True:
@@ -387,7 +387,7 @@ class Baal:
                     self._scout(4, -250, -600, 200, 345, 0, 0, 4, 2, 2, 4) # bottom - left
             else:
                 #throne killd
-                keyboard.send(self._skill_hotkeys["teleport"]) #switch active skill to teleport
+                keyboard.send(self._char._skill_hotkeys["teleport"]) #switch active skill to teleport
                 keyboard.send(self._config.char["minimap"]) #turn on minimap
                 self._throne_room()
 
@@ -397,7 +397,7 @@ class Baal:
             Logger.debug("MAP IS OFF! DO THRONE!")
         else:
             Logger.debug("MAP IS ON TURNING OFF! DO THRONE!")
-            keyboard.send(self._skill_hotkeys["teleport"]) #switch active skill to teleport
+            keyboard.send(self._char._skill_hotkeys["teleport"]) #switch active skill to teleport
             keyboard.send(self._config.char["minimap"]) #turn on minimap
         roomfound = False
         while not roomfound:
@@ -606,7 +606,7 @@ class Baal:
 
 
         # Logger.debug("HITTING TELE KEY AND TRYING TO GET TO CHAMBER")                   
-        # keyboard.send(self._skill_hotkeys["teleport"]) #switch active skill to teleport
+        # keyboard.send(self._char._skill_hotkeys["teleport"]) #switch active skill to teleport
         # found_loading_screen_func = lambda: self._ui_manager.wait_for_loading_screen(2.0)
         # if not self._char.select_by_template(["BAAL_THRONE_ROOM_7"], found_loading_screen_func, threshold=0.7, time_out=4):
         #     pos_m = self._screen.convert_abs_to_monitor((250, -200))
@@ -623,7 +623,7 @@ class Baal:
         if do_pre_buff:
             self._char.pre_buff()
         stuck_count = 0
-        keyboard.send(self._skill_hotkeys["teleport"]) #switch active skill to teleport
+        keyboard.send(self._char._skill_hotkeys["teleport"]) #switch active skill to teleport
         self._scout(4, -485, -600, 200, 345, stuck_count, 0, 4, 2, 2, 0) #tries to get to exit
         Logger.debug("KILLING BAAL????")
         if not self._pather.traverse_nodes([9001], self._char, time_out=3):
