@@ -36,7 +36,7 @@ class Arcane:
 
     def approach(self, start_loc: Location) -> Union[bool, Location]:
         Logger.info("Run Arcane")
-        if not self._char.can_teleport():
+        if not self._char.capabilities.can_teleport_natively:
             raise ValueError("Arcane requires teleport")
         if not self._town_manager.open_wp(start_loc):
             return False
@@ -123,7 +123,7 @@ if __name__ == "__main__":
     from ui import UiManager
     from bot import Bot
     config = Config()
-    screen = Screen(config.general["monitor"])
+    screen = Screen()
     game_stats = GameStats()
     bot = Bot(screen, game_stats, False)
     bot._arcane._find_summoner([(500, 40)])
