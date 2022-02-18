@@ -17,6 +17,8 @@ from utils.misc import wait
 from utils.custom_mouse import mouse
 from screen import Screen
 import numpy as np
+from transmute import Transmute
+from game_stats import GameStats
 
 
 class Cows:
@@ -28,7 +30,8 @@ class Cows:
         town_manager: TownManager,
         ui_manager: UiManager,
         char: IChar,
-        pickit: PickIt
+        pickit: PickIt,
+        game_stats: GameStats
     ):
         self._config = Config()
         self._screen = screen
@@ -40,6 +43,8 @@ class Cows:
         self._pickit = pickit
         self._picked_up_items = False
         self.used_tps = 0
+        self._game_stats = game_stats        
+        self._transmute = Transmute(self._screen, self._template_finder, self._game_stats, self._ui_manager)
 
 
     #thus function randomly teleports around until we either get stuck or find the exit we search for
@@ -231,8 +236,8 @@ class Cows:
                         if not self._char.select_by_template(templates_exit, found_loading_screen_func, threshold=0.7, time_out=4,telekinesis=True):
                             Logger.debug('\033[92m' + "Exit_Clicker: Found Exit, but didnt click it repeatedly, aborting run" + '\033[0m')
                             return False
-            if not self._template_finder.search_and_wait(templates_nextlevel, threshold=0.8, time_out=.5).valid:
-                if not self._template_finder.search_and_wait(templates_nextlevel, threshold=0.8, time_out=1).valid:
+            if not self._template_finder.search_and_wait(templates_nextlevel, threshold=0.6, time_out=.5).valid:
+                if not self._template_finder.search_and_wait(templates_nextlevel, threshold=0.5, time_out=1).valid:
                     self._scout(4, -250, -400, 200, 300, 0, 0, 4, 2, 2, 4) # bottom - left
             else:
                 keyboard.send(self._char._skill_hotkeys["teleport"]) #switch active skill to teleport
@@ -469,8 +474,44 @@ class Cows:
     #this function opens the cow portal
     def _open_cow_portal(self)-> bool:
         #go to akara, buy a tome
+        if not self._pather.traverse_nodes((Location.A1_TOWN_TP, Location.A1_AKARA), self._char, force_move=True): return False
+        tp_tome = self._template_finder.search_and_wait("TP_TOME", roi=self._config.ui_roi["left_inventory"], time_out=3, normalize_monitor=True)
+        if not tp_tome.valid:
+            return False
+        keyboard.send('ctrl', do_release=False)
+        mouse.move(*tp_tome.center, randomize=8, delay_factor=[1.0, 1.5])
+        wait(0.1, 0.15)
+        mouse.click(button="right")
+        wait(0.1, 0.15)
+        keyboard.send('ctrl', do_press=False)
+        self._ui_manager.close_vendor_screen()
         #go to stash & cube leg & top
+        self._town_manager.open_stash()
+        Logger.info("Opening Cube")
+        self._transmute.open_cube()
+        tp_tome = self._template_finder.search_and_wait("TP_TOME", roi=self._config.ui_roi["right_inventory"], time_out=3, normalize_monitor=True)
+        if not tp_tome.valid:
+            return False
+        keyboard.send('ctrl', do_release=False)
+        mouse.move(*tp_tome.center, randomize=8, delay_factor=[1.0, 1.5])
+        wait(0.1, 0.15)
+        mouse.click(button="right")
+        wait(0.1, 0.15)
+        keyboard.send('ctrl', do_press=False)
+        tp_tome = self._template_finder.search_and_wait("LEG_INVENTORY", roi=self._config.ui_roi["right_inventory"], time_out=3, normalize_monitor=True)
+        if not tp_tome.valid:
+            return False
+        keyboard.send('ctrl', do_release=False)
+        mouse.move(*tp_tome.center, randomize=8, delay_factor=[1.0, 1.5])
+        wait(0.1, 0.15)
+        mouse.click(button="right")
+        wait(0.1, 0.15)
+        keyboard.send('ctrl', do_press=False)
+        self._transmute.transmute()
+        keyboard.send('escape')
         #enter portal
+        found_loading_screen_func = lambda: self._ui_manager.wait_for_loading_screen(2.0)
+        if not self._char.select_by_template(["COW_STONY_FIELD_PORTAL_1", "COW_STONY_FIELD_PORTAL_0", "COW_STONY_FIELD_PORTAL_2"], found_loading_screen_func, threshold=0.5, time_out=4): return False
         self._cows()
         #return True
 
@@ -509,6 +550,7 @@ class Cows:
         #pre, during_1, during_2, diffed = self._map_capture()
         #self.map_diff(pre, during_1, during_2)
         if not self._tristram(): return False
+        logger.info("TOWN MAYBE!?!?")
         if not self._open_cow_portal(): return False
         """
         if not self._stony_field(): return False
