@@ -114,7 +114,7 @@ class Bot:
         self._nihlathak = Nihlathak(self._screen, self._template_finder, self._pather, self._town_manager, self._ui_manager, self._char, self._pickit)
         self._arcane = Arcane(self._screen, self._template_finder, self._pather, self._town_manager, self._ui_manager, self._char, self._pickit)
         self._diablo = Diablo(self._screen, self._template_finder, self._pather, self._town_manager, self._ui_manager, self._char, self._pickit)
-        self._cows = Cows(self._screen, self._template_finder, self._pather, self._town_manager, self._ui_manager, self._char, self._pickit)
+        self._cows = Cows(self._screen, self._template_finder, self._pather, self._town_manager, self._ui_manager, self._char, self._pickit, npc_manager)
 
         # Create member variables
         self._pick_corpse = pick_corpse
