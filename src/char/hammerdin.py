@@ -986,24 +986,6 @@ class Hammerdin(IChar):
             ### LOOT ###
             # we loot at boss
             Logger.debug("No attack choreography available in hammerdin.py for this node " + location + " - skipping to shorten run.")
-            """
-            pos_m = convert_abs_to_monitor((0, 0))
-            mouse.move(*pos_m, randomize=80, delay_factor=[0.5, 0.7])
-            self._move_and_attack((30, 15), Config().char["atk_len_cs_trashmobs"] * 0.5)
-            self._cast_hammers(0.75, "redemption")
-            self._move_and_attack((-30, -15), Config().char["atk_len_cs_trashmobs"] * 0.5)
-            if self._skill_hotkeys["cleansing"]:
-                keyboard.send(self._skill_hotkeys["cleansing"])
-                wait(0.1, 0.2)
-            if self._skill_hotkeys["redemption"]:
-                keyboard.send(self._skill_hotkeys["redemption"])
-                wait(0.3, 0.6)
-            ### LOOT ###
-            self._picked_up_items |= self._pickit.pick_up_items(self)
-            if self._skill_hotkeys["redemption"]:
-                keyboard.send(self._skill_hotkeys["redemption"])
-                wait(0.3, 0.6)
-            """
 
         elif location == "C2-G_seal2":
             ### APPROACH ###
