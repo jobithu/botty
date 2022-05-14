@@ -239,6 +239,7 @@ class Diablo:
             if not found:
                 self._pather.traverse_nodes_fixed("diablo_wp_entrance_loop", self._char)
         if not found:
+            Logger.debug("ROF: Teleporting to CS ENTRANCE - FAILED TO REACH WITH 10s, ABORTING RUN")
             if Config().general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/info_failed_cs_entrance_" + time.strftime("%Y%m%d_%H%M%S") + ".png", grab())
             return False
         Logger.debug("Kill trash at location: rof_02")
@@ -255,6 +256,7 @@ class Diablo:
             if not found: self._pather.traverse_nodes_fixed("diablo_wp_pentagram_loop", self._char)
         if not found:
             if Config().general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/info_failed_loop_pentagram_diablo_wp_pentagram_loop_" + time.strftime("%Y%m%d_%H%M%S") + ".png", grab())
+            Logger.debug("CS Trash: looping to PENTAGRAM - FAILED TO REACH WITH 15s, ABORTING RUN")
             return False
         return True
 
@@ -274,30 +276,7 @@ class Diablo:
         Logger.info("CS: Calibrated at PENTAGRAM")
         return True
 
-    """
-    #CLEAR TRASH BETWEEN PENTAGRAM & LAYOUT CHECK (clear_trash=1): NEW METHOD, BUT ONLY 50% EFFICACY
-    def _trash_seals(self, seal:str, path:str, node_calibration:str, loop_path:str, threshold:float) -> bool:
-        if not self._pather.traverse_nodes([602], self._char, timeout=2): return False
-        if not self._pather.traverse_nodes_fixed(path, self._char): return False
-        Logger.info("CS TRASH: " + seal + " Pent to LC")
-        self._char.kill_cs_trash(path)
-        if not self._pather.traverse_nodes(node_calibration, self._char, timeout=2, threshold=threshold): return False
-        Logger.info("CS TRASH: " + str(seal) + " looping to PENTAGRAM")
-        #if not self._loop_pentagram(loop_path): return False
-        found = False
-        templates = ["DIA_NEW_PENT_TP", "DIA_NEW_PENT_0", "DIA_NEW_PENT_1", "DIA_NEW_PENT_2"]
-        start_time = time.time()
-        while not found and time.time() - start_time < 15:
-            found = TemplateFinder().search_and_wait(templates, threshold=0.83, timeout=0.1, best_match=True, take_ss=False).valid
-            if not found: self._pather.traverse_nodes_fixed(loop_path, self._char)
-        if not found:
-            if Config().general["info_screenshots"]: cv2.imwrite(f"./info_screenshots/info_failed_loop_pentagram_" + path + "_" + time.strftime("%Y%m%d_%H%M%S") + ".png", grab())
-            return False
-        if not self._pather.traverse_nodes([602], self._char, timeout=2): return False
-        Logger.info("CS TRASH: " + str(seal) + " calibrated at PENTAGRAM")
-        return True
-    """
-
+  
     #CLEAR TRASH BETWEEN PENTAGRAM & LAYOUT CHECK (clear_trash=1) OLD METHOD, GIVING US 80% EFFICIENCY
     def _trash_seals(self) -> bool:
         self._pather.traverse_nodes([602], self._char)
