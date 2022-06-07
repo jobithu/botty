@@ -137,6 +137,30 @@ def erode_to_black(img: np.ndarray, threshold: int = 14):
     img = cv2.bitwise_and(img, mask_color_r)
     return img
 
+def erode_to_black2(img: np.ndarray, threshold: int = 14):
+    # Cleanup image with erosion image as marker with morphological reconstruction
+    cv2.setUseOptimized(True)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    thresh = cv2.threshold(gray, threshold, 255, cv2.THRESH_BINARY)[1]
+    kernel = np.ones((3, 3), np.uint8)
+    marker = thresh.copy()
+    marker = cv2.dilate(marker, kernel, iterations = 100)
+    marker = cv2.min(thresh, marker)
+    marker[1:-1, 1:-1] = 0
+    while True:
+        tmp = marker.copy()
+        marker = cv2.dilate(marker, kernel, iterations = 3)
+        marker = cv2.min(thresh, marker)
+        difference = cv2.subtract(marker, tmp)
+        #print("iteration")
+        #print(cv2.countNonZero(difference))
+        if cv2.countNonZero(difference) <= 1800:
+            break
+    mask_r = cv2.bitwise_not(marker)
+    mask_color_r = cv2.cvtColor(mask_r, cv2.COLOR_GRAY2BGR)
+    img = cv2.bitwise_and(img, mask_color_r)
+    return img
+
 def roi_center(roi: list[float] = None):
     x, y, w, h = roi
     return round(x + w/2), round(y + h/2)

@@ -2,14 +2,23 @@ import cv2
 import numpy as np
 import time
 import os
+import sys
 from dataclasses import dataclass
 import math
 
+from logger import Logger
 from config import Config
 from utils.misc import color_filter, cut_roi
 from item import ItemCropper
 from ocr import OcrResult, Ocr
+from multiprocessing.pool import ThreadPool
+cv2.setUseOptimized(True)
 
+class template_result:
+    def __init__(self, maxval, maxloc, template):
+        self.mv = maxval
+        self.ml = maxloc
+        self.template = template
 
 @dataclass
 class Template:
@@ -45,7 +54,7 @@ class ItemFinder:
         }
         self._items_to_pick = Config().items
         self._folder_name = "items"
-        self._min_score = 0.86
+        self._min_score = 0.9
         # load all templates
         self._templates = {}
         for filename in os.listdir(f'assets/{self._folder_name}'):
@@ -73,6 +82,215 @@ class ItemFinder:
                     self._templates[item_name] = template
 
     def search(self, inp_img: np.ndarray) -> list[Item]:
+      img = inp_img[:,:,:]
+        start = time.time()
+        start2 = time.time()
+        item_text_clusters = self._item_cropper.crop(img, 7)
+        item_list = []
+
+        thrd = [0]*len(item_text_clusters)
+        pool = ThreadPool(processes=6)
+        #print(f"Item Searchx: {time.time() - start2}")
+        for i, cluster in enumerate(item_text_clusters):
+            thrd[i] = pool.apply_async(self.item_cluster, (inp_img, cluster))
+
+
+
+        for i, cluster in enumerate(item_text_clusters):
+            itm = thrd[i].get()
+            if itm is not None: item_list.append(itm)
+
+        """
+        for cluster in item_text_clusters:
+            x, y, w, h = cluster.roi
+            # cv2.rectangle(inp_img, (x, y), (x+w, y+h), (0, 255, 0), 1)
+            cropped_input  = cluster.data
+            best_score = None
+            item = None
+            for key in self._templates:
+                
+            if item is not None and self._items_to_pick[item.name].pickit_type:
+                item_list.append(item)
+                
+        """
+        elapsed = time.time() - start
+        #print(f"Item Search2: {elapsed}")
+        return item_list
+
+    def item_cluster(self, inp_img, cluster):
+        #if type(cluster) is not "item.item_cropper.ItemText":
+        #    return
+        item_list = []
+        x, y, w, h = cluster.roi
+        cropped_input  = cluster.data
+        best_score = None
+        item = None
+        thrd = [0]*len(self._templates)
+        pool = ThreadPool(processes=8)
+
+        best_item = None
+        best_key = None
+        grayscale = cv2.cvtColor(cropped_input, cv2.COLOR_BGR2GRAY)
+        _, mask = cv2.threshold(grayscale, 0, 255, cv2.THRESH_BINARY)
+        hist = cv2.calcHist([cropped_input], [0, 1, 2], mask, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+        for i, key in enumerate(self._templates):
+            if not self._templates[key].blacklist and  self._items_to_pick[key].pickit_type:
+                thrd[i] = pool.apply_async(self.item_template_match, (key, x, y, w, h, cropped_input, best_score, item, cluster, hist))
+
+        for i, key in enumerate(self._templates):
+            if isinstance(thrd[i], int): continue
+            #print(f"key: {key}")
+
+            #sys.stdout.write(f"key: {key}\n")
+            #sys.stdout.flush()
+            template: Template = self._templates[key]
+            output = thrd[i].get()
+
+            if output is not None :
+                max_loc = output.ml
+                max_val = output.mv
+                if max_val > self._min_score and self._items_to_pick[key].pickit_type:
+
+                    #if "flawed" in key:
+                    #    print("flawed found?")
+                    if template.blacklist:
+                        max_val += 0.02
+                    if (best_score is None or max_val > best_score):
+                        best_score = max_val
+                        if template.blacklist:
+                            item = None
+                        else:
+                            best_item = output
+                            best_key = key
+
+        if best_item is not None and best_key is not None:
+            max_loc = best_item.ml
+            max_val = best_item.mv
+            key = best_key
+            template: Template = self._templates[key]
+            # Do another color hist check with the actuall found item template
+            # TODO: After cropping the "cropped_input" with "cropped_item", check if "cropped_input" might need to be
+            #       checked for other items. This would solve the issue of many items in one line being in one cluster
+            roi = [max_loc[0], max_loc[1], template.data.shape[1], template.data.shape[0]]
+            cropped_item = cut_roi(cropped_input, roi)
+            grayscale = cv2.cvtColor(cropped_item, cv2.COLOR_BGR2GRAY)
+            _, mask = cv2.threshold(grayscale, 0, 255, cv2.THRESH_BINARY)
+            hist = cv2.calcHist([cropped_item], [0, 1, 2], mask, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+            hist_result = cv2.compareHist(template.hist, hist, cv2.HISTCMP_CORREL)
+            same_type = hist_result > 0.65 and hist_result is not np.inf
+            # if ocr_during_pickit is off, min_gold_to_pick is set, and matched template is gold, OCR the image
+            if not Config().advanced_options['ocr_during_pickit'] \
+                and Config().char['min_gold_to_pick'] and 'misc_gold' == key:
+                results = Ocr().image_to_text([cluster["clean_img"]], model = "engd2r_inv_th_fast", psm = 7)
+                setattr(cluster, "ocr_result", results[0])
+            if same_type:
+                item = Item()
+                item.center = (int(max_loc[0] + x + int(template.data.shape[1] * 0.5)), int(max_loc[1] + y + int(template.data.shape[0] * 0.5)))
+                item.name = best_key
+                item.score = max_val
+                item.roi = [max_loc[0] + x, max_loc[1] + y, template.data.shape[1], template.data.shape[0]]
+                center_abs = (item.center[0] - (inp_img.shape[1] // 2), item.center[1] - (inp_img.shape[0] // 2))
+                item.dist = math.dist(center_abs, (0, 0))
+                item.ocr_result = cluster.ocr_result
+                item.color = cluster.color
+                item._template = best_item.template
+                item.region = cluster.roi
+                #print(max_loc[1] + x, max_loc[1] + x + template.data.shape[1], max_loc[0] + y, max_loc[0] + y + template.data.shape[0])
+                #item.img = inp_img[max_loc[1] + y:max_loc[1] + y + template.data.shape[0], max_loc[0] + x : max_loc[0] + x + template.data.shape[1]]
+                item.template = template
+
+
+        if item is not None and self._items_to_pick[item.name].pickit_type:
+            #print(f"want to pickit: {key} {self._items_to_pick[item.name].pickit_type}")
+            return item#(Item = item, Cluster = cluster)
+
+        return None
+
+    def process_item_output(self, output, key, x, y, w, h, cropped_input, best_score, item, cluster):
+        item = None
+        roi = [max_loc[0], max_loc[1], template.data.shape[1], template.data.shape[0]]
+        cropped_item = cut_roi(cropped_input, roi)
+        grayscale = cv2.cvtColor(cropped_item, cv2.COLOR_BGR2GRAY)
+        _, mask = cv2.threshold(grayscale, 0, 255, cv2.THRESH_BINARY)
+        hist = cv2.calcHist([cropped_item], [0, 1, 2], mask, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+        hist_result = cv2.compareHist(template.hist, hist, cv2.HISTCMP_CORREL)
+        same_type = hist_result > 0.65 and hist_result is not np.inf
+        # if ocr_during_pickit is off, min_gold_to_pick is set, and matched template is gold, OCR the image
+        if not Config().advanced_options['ocr_during_pickit'] \
+            and Config().char['min_gold_to_pick'] and 'misc_gold' == key:
+            results = Ocr().image_to_text([cluster["clean_img"]], model = "engd2r_inv_th_fast", psm = 7)
+            setattr(cluster, "ocr_result", results[0])
+        if same_type:
+            item = Item()
+            item.center = (int(max_loc[0] + x + int(template.data.shape[1] * 0.5)), int(max_loc[1] + y + int(template.data.shape[0] * 0.5)))
+            item.name = key
+            item.score = max_val
+            item.roi = [max_loc[0] + x, max_loc[1] + y, template.data.shape[1], template.data.shape[0]]
+            center_abs = (item.center[0] - (inp_img.shape[1] // 2), item.center[1] - (inp_img.shape[0] // 2))
+            item.dist = math.dist(center_abs, (0, 0))
+            item.ocr_result = cluster.ocr_result
+            item.color = cluster.color
+            #print(max_loc[1] + x, max_loc[1] + x + template.data.shape[1], max_loc[0] + y, max_loc[0] + y + template.data.shape[0])
+            #item.img = inp_img[max_loc[1] + y:max_loc[1] + y + template.data.shape[0], max_loc[0] + x : max_loc[0] + x + template.data.shape[1]]
+            item.template = template
+        return item
+
+    def item_template_match(self, key, x, y, w, h, cropped_input, best_score, item, cluster, hist):
+        template: Template = self._templates[key]
+        if cropped_input.shape[1] > template.data.shape[1] and cropped_input.shape[0] > template.data.shape[0]:
+            start = time.time()
+            # sanity check if there is any color overlap of template and cropped_input
+            hist_result = cv2.compareHist(template.hist, hist, cv2.HISTCMP_CORREL)
+            same_type = hist_result > 0.0 and hist_result is not np.inf
+            if same_type:
+                result = cv2.matchTemplate(cropped_input, template.data, cv2.TM_CCOEFF_NORMED)
+                _, max_val, _, max_loc = cv2.minMaxLoc(result)
+                #print(f"bench: {key}, {time.time() - start}")
+                return template_result(max_val, max_loc, result)
+
+                """
+                if max_val > self._min_score:
+                    if template.blacklist:
+                        max_val += 0.02
+                    if (best_score is None or max_val > best_score):
+                        best_score = max_val
+                        if template.blacklist:
+                            item = None
+                        else:
+                            # Do another color hist check with the actuall found item template
+                            # TODO: After cropping the "cropped_input" with "cropped_item", check if "cropped_input" might need to be
+                            #       checked for other items. This would solve the issue of many items in one line being in one cluster
+                            roi = [max_loc[0], max_loc[1], template.data.shape[1], template.data.shape[0]]
+                            cropped_item = cut_roi(cropped_input, roi)
+                            grayscale = cv2.cvtColor(cropped_item, cv2.COLOR_BGR2GRAY)
+                            _, mask = cv2.threshold(grayscale, 0, 255, cv2.THRESH_BINARY)
+                            hist = cv2.calcHist([cropped_item], [0, 1, 2], mask, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+                            hist_result = cv2.compareHist(template.hist, hist, cv2.HISTCMP_CORREL)
+                            same_type = hist_result > 0.65 and hist_result is not np.inf
+                            # if ocr_during_pickit is off, min_gold_to_pick is set, and matched template is gold, OCR the image
+                            if not Config().advanced_options['ocr_during_pickit'] \
+                                and Config().char['min_gold_to_pick'] and 'misc_gold' == key:
+                                results = Ocr().image_to_text([cluster["clean_img"]], model = "engd2r_inv_th_fast", psm = 7)
+                                setattr(cluster, "ocr_result", results[0])
+                            if same_type:
+                                item = Item()
+                                item.center = (int(max_loc[0] + x + int(template.data.shape[1] * 0.5)), int(max_loc[1] + y + int(template.data.shape[0] * 0.5)))
+                                item.name = key
+                                item.score = max_val
+                                item.roi = [max_loc[0] + x, max_loc[1] + y, template.data.shape[1], template.data.shape[0]]
+                                center_abs = (item.center[0] - (inp_img.shape[1] // 2), item.center[1] - (inp_img.shape[0] // 2))
+                                item.dist = math.dist(center_abs, (0, 0))
+                                item.ocr_result = cluster.ocr_result
+                                item.color = cluster.color
+                                
+        return (Item = item, Cluster = cluster)
+        """
+        return None
+
+
+
+
+    def search2(self, inp_img: np.ndarray) -> list[Item]:
         img = inp_img[:,:,:]
         start = time.time()
         item_text_clusters = self._item_cropper.crop(img, 7)
@@ -123,6 +341,7 @@ class ItemFinder:
                                         item.center = (int(max_loc[0] + x + int(template.data.shape[1] * 0.5)), int(max_loc[1] + y + int(template.data.shape[0] * 0.5)))
                                         item.name = key
                                         item.score = max_val
+                                        item.region = cluster.roi
                                         item.roi = [max_loc[0] + x, max_loc[1] + y, template.data.shape[1], template.data.shape[0]]
                                         center_abs = (item.center[0] - (inp_img.shape[1] // 2), item.center[1] - (inp_img.shape[0] // 2))
                                         item.dist = math.dist(center_abs, (0, 0))
@@ -131,7 +350,8 @@ class ItemFinder:
             if item is not None and self._items_to_pick[item.name].pickit_type:
                 item_list.append(item)
         elapsed = time.time() - start
-        # print(f"Item Search: {elapsed}")
+        #print(f"Item Search: {elapsed}")
+        print(f"Item Search: {elapsed}")
         return item_list
 
 

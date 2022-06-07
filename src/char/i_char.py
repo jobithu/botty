@@ -209,11 +209,11 @@ class IChar:
         wait(0.8, 1.3) # takes quite a while for tp to be visible
         start = time.time()
         retry_count = 0
-        while (time.time() - start) < 8:
+        while (time.time() - start) < 12:
             if time.time() - start > 3.7 and retry_count == 0:
                 retry_count += 1
                 Logger.debug("Move to another position and try to open tp again")
-                pos_m = convert_abs_to_monitor((random.randint(-70, 70), random.randint(-70, 70)))
+                pos_m = convert_abs_to_monitor((random.randint(-150, 150), random.randint(-150, 150)))
                 self.pre_move()
                 self.move(pos_m)
                 if skills.has_tps():
